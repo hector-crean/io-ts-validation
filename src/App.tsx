@@ -13,7 +13,7 @@ import { gql, useQuery } from "@apollo/client";
 //   </ApolloConsumer>
 // );
 
-import { validator, StructureAlmere, StructureAlmereArray, decodeWith, Simple } from './types'; 
+import { StructureAlmere, StructureAlmereArray, decodeWith  } from './types'; 
 import * as D from 'io-ts/Decoder'; 
 
 
@@ -44,11 +44,11 @@ const GET_QUERY = gql`
 
 function App() {
 
-  const q = useQuery(GET_QUERY); 
-  // console.log(q.data); 
-  const a1 = q.data?.structureDataAlmere
-  // console.log(a1); 
-  const result = decodeWith(StructureAlmereArray.asDecoder())(a1); 
+  interface Data {structureDataAlmere: StructureAlmere[] }
+
+  const { loading, error, data } = useQuery<Data, StructureAlmere> (GET_QUERY); 
+  const decoder = StructureAlmereArray.asDecoder()
+  const result = decodeWith(decoder)(data?.structureDataAlmere); 
   console.log(result)
   // console.log(result); 
   
