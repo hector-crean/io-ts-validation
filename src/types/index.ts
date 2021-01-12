@@ -53,9 +53,9 @@ const NumberFromString: NumberFromStringC = new t.Type<number, string, unknown>(
 
 
 const StructureAlmere = t.partial({
-    __typename: t.string /*t.literal("structureDataAlmere")*/,
+    __typename: t.literal("structureDataAlmere"),
     assemblyTimeInDays: t.number,
-    buildingSystem: t.string /*t.union([t.literal("WikiHouseSwift"),t.literal("WikiHouseSkylark")])*/,
+    buildingSystem: t.union([t.literal("WikiHouseSwift"),t.literal("WikiHouseSkylark")]),
     id: t.string,
     locationClass: t.union([t.literal("EnvelopeSection"), t.literal("Wall")]),
     moduleName: t.union([
