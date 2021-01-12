@@ -1,57 +1,54 @@
-import * as D from 'io-ts/Decoder';
-import { pipe } from 'fp-ts/pipeable';
-import * as E from 'fp-ts/Either';
-
-import { QueryResult } from '@apollo/client'; 
 import * as t from "io-ts";
 
-/////////
-// Utility Types
-//////
+/**
+ * Type guards
+ */
 
+const isNonEmptyString = (input: unknown): input is string => {
+  return typeof input === "string" && input.length > 0;
+};
 
-// https://github.com/gcanti/io-ts-types/tree/master/src
-function fromRefinement<A>(name: string, is: (u: unknown) => u is A): t.Type<A, A, unknown> {
-    return new t.Type(name, is, (u, c) => (is(u) ? t.success(u) : t.failure(u, c)), t.identity)
-}
+const isIdString = (input: unknown): input is string => {
+  return typeof input === "string" && /[A-Za-z]{12}/g.test(input);
+};
 
-/*  uuid:   */
+const isValidDateString = (input: unknown): input is string => {
+  return typeof input === "string" && !isNaN(Date.parse(input));
+};
+
+/**
+ * Custom codecs
+ */
+
+const NonEmptyString = new t.Type<string, string, unknown>(
+  "nonEmptyString",
+  isNonEmptyString,
+  (input, context) => (isNonEmptyString(input) ? t.success(input) : t.failure(input, context)),
+  t.identity,
+);
+
+const UtcDateString = new t.Type<string, string, unknown>(
+  "utcDateString",
+  isValidDateString,
+  (input, context) => (isValidDateString(input) ? t.success(input) : t.failure(input, context)),
+  t.identity,
+);
+
+const IdString = new t.Type<string, string, unknown>(
+  "idString",
+  isIdString,
+  (input, context) => (isIdString(input) ? t.success(input) : t.failure(input, context)),
+  t.identity,
+);
+
 const regex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 interface UUIDBrand { readonly UUID: unique symbol }
 type UUID = t.Branded<string, UUIDBrand>
 const UUID = t.brand(t.string, (s): s is UUID => regex.test(s), 'UUID')
 
-/* date:  */
-interface DateC extends t.Type<Date, Date, unknown> {}
-const isDate = (u: unknown): u is Date => u instanceof Date
-const date: DateC = fromRefinement('Date', isDate)
-
-
-/* often we may have encoded data types as string -> check whether we can extract data from string */
-interface NonEmptyStringBrand { readonly NonEmptyString: unique symbol }
-type NonEmptyString = t.Branded<string, NonEmptyStringBrand>
-interface NonEmptyStringC extends t.Type<NonEmptyString, string, unknown> {}
-const NonEmptyString: NonEmptyStringC = t.brand(
-    t.string,
-    (s): s is NonEmptyString => s.length > 0,
-    'NonEmptyString'
-)
-
-interface NumberFromStringC extends t.Type<number, string, unknown> {}
-const NumberFromString: NumberFromStringC = new t.Type<number, string, unknown>(
-    'NumberFromString',
-    t.number.is,
-    (u, c) =>
-      E.either.chain(t.string.validate(u, c), s => {
-        const n = +s
-        return isNaN(n) || s.trim() === '' ? t.failure(u, c) : t.success(n)
-      }),
-    String
-  )
-
-  
-
-
+/**
+ * Composite types
+ */
 const BuildingSystem = t.union([t.literal("WikiHouseSwift"),t.literal("WikiHouseSkylark")])
 const LocationClass = t.union([t.literal("EnvelopeSection"), t.literal("Wall")])
 const ModuleName = t.union([
@@ -106,17 +103,17 @@ const ModuleName = t.union([
   t.literal('Module-E1_01'),
   t.literal('Module-E1_v/a')
 ])
-type ModuleName = t.TypeOf<typeof ModuleName>
-export type {ModuleName}
 const PrimaryMaterial = t.literal("Timber.Plywood")
 const RoofPitchType = t.union([t.literal('Dual-centre'), t.literal('Mono'), t.literal('Asymetric'), t.literal('Parapet'), t.literal('Flat')])
 const SpansNStories = t.union([t.literal('1'), t.literal('2'), t.literal('3')])
 
-const StructureAlmere = t.partial({
+
+
+const AlmereModule = t.interface({
+    id: UUID.type,
     __typename: t.literal("structureDataAlmere"),
     assemblyTimeInDays: t.number,
     buildingSystem: BuildingSystem,
-    id: t.string,
     locationClass: LocationClass,
     moduleName: ModuleName,
     pitchedAngle1: t.number,
@@ -130,43 +127,75 @@ const StructureAlmere = t.partial({
     yDimension: t.number,
     zDimension: t.number 
   })
-
-type StructureAlmere = t.TypeOf<typeof StructureAlmere>
-export { StructureAlmere }
-
-const StructureAlmereArray = t.array(StructureAlmere)
-type StructureAlmereArray = t.TypeOf<typeof StructureAlmereArray>
-export { StructureAlmereArray }
+const AlmereModules = t.array(AlmereModule)
 
 
+/**
+ * Static types
+ */
+export type NonEmptyString = t.TypeOf<typeof NonEmptyString>;
+export type UtcDateString = t.TypeOf<typeof UtcDateString>;
+export type IdString = t.TypeOf<typeof IdString>;
+
+type BuildingSystem = t.TypeOf<typeof BuildingSystem>;
+type LocationClass = t.TypeOf<typeof LocationClass>;
+type ModuleName = t.TypeOf<typeof ModuleName>;
+export type { ModuleName }
+type PrimaryMaterial = t.TypeOf<typeof PrimaryMaterial>;
+type RoofPitchType = t.TypeOf<typeof RoofPitchType>;
+type SpansNStories = t.TypeOf<typeof SpansNStories>;
 
 
-/* Decoding functions */
-
-// type validatorFn = <T, A>(decoder: t.Decoder<T, A>) => (queryResult: QueryResult ) => any; 
-
-// export const validator: validatorFn 
-// = (decoder) => (queryResult) => {
-//   return pipe(
-//     queryResult.data,
-//     decoder.decode,
-//     // E.map((value) => ({value})),
-//     E.fold(
-//         // failure handler
-//         (errors) => {console.log(`Error: object is ${errors}`)},
-//         // success handler
-//         (value) => {return value},
-//     ),
-//   );
-// };
+type AlmereModule = t.TypeOf<typeof AlmereModule>
+export { AlmereModule }
+type AlmereModules = t.TypeOf<typeof AlmereModules>
+export { AlmereModules }
 
 
-//https://dev.to/gillchristian/enough-fp-ts-to-work-with-io-ts-20ip
-export const decodeWith 
-= <A>(decoder: t.Decoder<unknown, A>) => ( response: unknown ) =>
-  pipe(
-    response,
-    decoder.decode,
-    // humanizeErrors,
-    E.mapLeft((errors) => ({tag: 'decoding', errors} as const)),
-  )
+
+
+/**
+ * Entities
+ */
+
+
+// https://redux.js.org/recipes/structuring-reducers/normalizing-state-shape
+export type NormalizedModulesAlmere = Record<string, AlmereModule>;
+
+
+
+/**
+ * State
+ */
+/**
+ The recommended approach to managing relational or nested data in a Redux store is to treat a 
+ portion of your store as if it were a database, and keep that data in a normalized form. 
+ */
+
+export type ModelState = {
+  entities: {
+    almereModules: NormalizedModulesAlmere;
+  };
+};
+
+
+
+/**
+ * Actions
+ */
+
+ 
+
+export enum ModelStateActions {
+    UPSERT_ALMERE_MODULE = 'UPSERT_ALMERE_MODULE'
+}
+
+
+interface GetModuleAction {
+  type: typeof ModelStateActions.UPSERT_ALMERE_MODULE
+  payload: {almereModule: AlmereModule}
+}
+
+
+export type ModelStateActionTypes = GetModuleAction; 
+

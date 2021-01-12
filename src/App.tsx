@@ -1,53 +1,59 @@
-import React from 'react';
+import React, {useState} from 'react';
 import './App.css';
 
-import { gql, useQuery } from "@apollo/client";
-import { StructureAlmere, StructureAlmereArray, decodeWith  } from './types'; 
 
-
-
-const GET_ALMERE_STRUCT = gql`
-  query {
-    structureDataAlmere {
-      assemblyTimeInDays
-      buildingSystem
-      id
-      locationClass
-      moduleName
-      pitchedAngle1
-      pitchedAngle2
-      primaryMaterial
-      roofPitchType
-      spansNStories
-      unitCost
-      thickness
-      xDimension
-      yDimension
-      zDimension
-    }
-  }`;
-
-/* The magic is happening in types/index.ts file: -> 
-  Creating a StructureAlmere instance using io-ts. We can convert this into a 'decoder' using asDecoder(), and then use the 
-  .decode method to validate our query response. 
-
-*/
-
-
+import { QueryAirtable } from './QueryAirtable'; 
+import { upsertAlmereModule } from './store/model/action'; 
+import { store } from './store'
+import {AlmereModule} from './store/model/types'
 
 function App() {
 
-  type Data = {structureDataAlmere: StructureAlmere[] }
-  type Variables = StructureAlmere
-  
-  const { loading, error, data } = useQuery<Data, Variables> (GET_ALMERE_STRUCT); 
-  const decoder = StructureAlmereArray.asDecoder()
-  const result = decodeWith(decoder)(data?.structureDataAlmere); 
-  console.log(result)
+  const mod1: AlmereModule  =  {
+  __typename: "structureDataAlmere",
+  assemblyTimeInDays: 2,
+  buildingSystem: "WikiHouseSwift",
+  id: "1",
+  locationClass: "EnvelopeSection",
+  moduleName: "Module-A1_05",
+  pitchedAngle1: 45,
+  pitchedAngle2: 45,
+  primaryMaterial: "Timber.Plywood",
+  roofPitchType: "Dual-centre",
+  spansNStories: "1",
+  unitCost: 695,
+  thickness: 0.336,
+  xDimension: 3.3,
+  yDimension: 1.2,
+  zDimension: 5.9
+}
+const mod2: AlmereModule  =  {
+  __typename: "structureDataAlmere",
+  assemblyTimeInDays: 2,
+  buildingSystem: "WikiHouseSwift",
+  id: "1",
+  locationClass: "EnvelopeSection",
+  moduleName: "Module-A1_04",
+  pitchedAngle1: 45,
+  pitchedAngle2: 45,
+  primaryMaterial: "Timber.Plywood",
+  roofPitchType: "Dual-centre",
+  spansNStories: "1",
+  unitCost: 695,
+  thickness: 0.336,
+  xDimension: 3.3,
+  yDimension: 1.2,
+  zDimension: 5.9
+}
+ 
+  store.dispatch(upsertAlmereModule(mod1))
+  store.dispatch(upsertAlmereModule(mod2))
+
+
  
   return (
     <div className="App">
-      <pre>{ JSON.stringify(result, null, 2) }</pre>
+
     </div>
   );
 }
