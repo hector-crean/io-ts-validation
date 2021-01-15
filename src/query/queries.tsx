@@ -1,7 +1,6 @@
 // https://app.graphqleditor.com/hector-crean/build-x?v=latest
 
 import { gql, useQuery  } from "@apollo/client";
-import { SubassemblyName } from '../store/model/types'; 
 
 export const GET_SUBASSEMBLY_STRUCT = gql`
   query {

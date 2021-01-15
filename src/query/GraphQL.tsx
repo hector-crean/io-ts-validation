@@ -1,8 +1,8 @@
 import React from 'react'; 
 import { useQuery } from "@apollo/client";
 import { GET_PROJECT } from './queries'; 
-import { Project } from '../store/model/types'
-import { decodeWith, SubassemblyName, Subassemblies, Subassembly  } from '../store/model/types'; 
+// import { Project } from '../store/model/types'
+// import { decodeWith, SubassemblyName, Subassemblies, Subassembly  } from '../store/model/types'; 
 
 
 

@@ -1,3 +1,8 @@
+// https://dev.to/gnomff_65/fp-ts-and-beautiful-api-calls-1f55
+
+// api example: https://github.com/OliverJAsh/twitter-api-ts
+
+
 import axios, { AxiosResponse } from 'axios'
 import { flatten, map } from 'fp-ts/lib/Array'
 import * as TE from 'fp-ts/lib/TaskEither'
@@ -9,19 +14,9 @@ import { flow } from 'fp-ts/lib/function'
 import { failure } from 'io-ts/lib/PathReporter'
 import * as t from 'io-ts'
 
-//create a schema to load our user data into
-const users = t.type({
-  data: t.array(t.type({
-    first_name: t.string
-  }))
-});
+import { Users, Answer } from './types/static-types'; 
+import { users, answer } from './types/iots-types'; 
 
-type Users = t.TypeOf<typeof users>
-
-//schema to hold the deepest of answers
-const answer = t.type({
-  ans: t.number
-});
 
 //Convert our api call to a TaskEither
 const httpGet = (url:string) => TE.tryCatch<Error, AxiosResponse>(
