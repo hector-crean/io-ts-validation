@@ -38,7 +38,7 @@ function App() {
     <div className="App">
 
       {/* <CounterComponent/> */}
-    <QueryAirtable id={"Module-A1_05"} />
+    <QueryAirtable subassemblyName={"Module-A1_05"} />
 
     </div>
   );

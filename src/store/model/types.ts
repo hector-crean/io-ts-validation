@@ -297,10 +297,10 @@ export type ReduxProjectState = {
     properties: NormalizedObject<Property>,
     buildings: NormalizedObject<Building>,
     subassemblies: NormalizedObject<Subassembly>,
-    energyPerformance: NormalizedObject<EnergyPerformance>,
-    pattern: NormalizedObject<Pattern>,
-    tasteProfile: NormalizedObject<TasteProfile>,
-    designer: NormalizedObject<Designer>
+    energyPerformances: NormalizedObject<EnergyPerformance>,
+    patterns: NormalizedObject<Pattern>,
+    tasteProfiles: NormalizedObject<TasteProfile>,
+    designers: NormalizedObject<Designer>
   }
 }
 
@@ -360,15 +360,47 @@ interface UpsertSubassembliesAction {
   type: typeof ModelStateActions.UPSERT_SUBASSEMBLIES
   payload: {subassembly: Subassembly}
 }
-
 interface UpsertOwnersAction {
   type: typeof ModelStateActions.UPSERT_OWNERS
-  payload: {subassembly: Owner}
+  payload: {owners: Owner}
 }
-
-
+interface UpsertPropertiesAction {
+  type: typeof ModelStateActions.UPSERT_PROPERTIES
+  payload: {properties: Property}
+}
+interface UpsertEnergyPerformancesAction {
+  type: typeof ModelStateActions.UPSERT_ENERGY_PERFORMANCE
+  payload: {energyPerformances: EnergyPerformance}
+}
+interface UpsertBuildingsAction {
+  type: typeof ModelStateActions.UPSERT_BUILDINGS
+  payload: {buildings: Building}
+}
+interface UpsertPatternsAction {
+  type: typeof ModelStateActions.UPSERT_PATTERN
+  payload: {patterns: Pattern}
+}
+interface UpsertTasteProfilesAction {
+  type: typeof ModelStateActions.UPSERT_TASTE_PROFILE
+  payload: {tasteProfiles: TasteProfile}
+}
+interface UpsertDesignersAction {
+  type: typeof ModelStateActions.UPSERT_DESIGNER
+  payload: {designers: Designer}
+}
+interface UpsertProjectsAction {
+  type: typeof ModelStateActions.UPSERT_PROJECTS
+  payload: {projects: Project}
+}
 
 
 export type ModelStateActionTypes = 
 | UpsertSubassembliesAction
-
+| UpsertOwnersAction
+| UpsertPropertiesAction
+| UpsertEnergyPerformancesAction
+| UpsertBuildingsAction
+| UpsertPatternsAction
+| UpsertTasteProfilesAction
+| UpsertDesignersAction
+| UpsertProjectsAction

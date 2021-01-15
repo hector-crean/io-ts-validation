@@ -86,17 +86,17 @@ const atProperies = (id: string) => Lens.fromProp<Record<string,Property>>()(id)
 const buildingsLens = Lens.fromPath<ReduxProjectState>()(["entities", "buildings", 'byId']);
 const atBuilding = (id: string) => Lens.fromProp<Record<string, Building>>()(id)
 
-const energyPerformanceLens = Lens.fromPath<ReduxProjectState>()(["entities", "energyPerformance", 'byId']);
+const energyPerformanceLens = Lens.fromPath<ReduxProjectState>()(["entities", "energyPerformances", 'byId']);
 const atEnergyPerformance = (id: string) => Lens.fromProp<Record<string, EnergyPerformance>>()(id)
 
-const patLens = Lens.fromPath<ReduxProjectState>()(["entities", "pattern", 'byId']);
+const patLens = Lens.fromPath<ReduxProjectState>()(["entities", "patterns", 'byId']);
 const atPattern = (id: string) => Lens.fromProp<Record<string, Pattern>>()(id)
 
 
-const tasteProfileLens = Lens.fromPath<ReduxProjectState>()(["entities", "tasteProfile", 'byId']);
+const tasteProfileLens = Lens.fromPath<ReduxProjectState>()(["entities", "tasteProfiles", 'byId']);
 const atTasteProfile = (id: string) => Lens.fromProp<Record<string, TasteProfile>>()(id)
 
-const designerLens = Lens.fromPath<ReduxProjectState>()(["entities", "designer", 'byId']);
+const designerLens = Lens.fromPath<ReduxProjectState>()(["entities", "designers", 'byId']);
 const atDesigner = (id: string) => Lens.fromProp<Record<string, Designer>>()(id)
 
 
@@ -109,10 +109,10 @@ const atDesigner = (id: string) => Lens.fromProp<Record<string, Designer>>()(id)
     properties: {byId: R.empty, allIds: []},
     buildings: {byId: R.empty, allIds: []},
     subassemblies: {byId: R.empty, allIds: []},
-    energyPerformance: {byId: R.empty, allIds: []},
-    pattern: {byId: R.empty, allIds: []},
-    tasteProfile: {byId: R.empty, allIds: []},
-    designer: {byId: R.empty, allIds: []},
+    energyPerformances: {byId: R.empty, allIds: []},
+    patterns: {byId: R.empty, allIds: []},
+    tasteProfiles: {byId: R.empty, allIds: []},
+    designers: {byId: R.empty, allIds: []},
   }
  }
 

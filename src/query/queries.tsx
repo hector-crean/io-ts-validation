@@ -1,7 +1,7 @@
 // https://app.graphqleditor.com/hector-crean/build-x?v=latest
 
 import { gql, useQuery  } from "@apollo/client";
-import { SubassemblyName } from '../types'; 
+import { SubassemblyName } from '../store/model/types'; 
 
 export const GET_SUBASSEMBLY_STRUCT = gql`
   query {
@@ -25,8 +25,8 @@ export const GET_SUBASSEMBLY_STRUCT = gql`
   }`;
 
 export const GET_SUBASSEMBLY = gql`
-  query getSubassembly {
-    subassemblies(subassemblyName: "Module-A1_05") {
+  query getSubassembly($subassemblyName: String! ) {
+    subassemblies(subassemblyName: $subassemblyName) {
       id
       subassemblyAssemblyTimeInDays
       subassemblyBuildingSystem
@@ -71,8 +71,8 @@ export const GET_SUBASSEMBLY = gql`
 // `
 
 export const GET_PROJECT = gql`
-  query getProject {
-  projects(id: "recDSfaVc2clkOcLR") {
+  query getProject($id: String!) {
+  projects(id: $id) {
     id
     projectProperty {
       id

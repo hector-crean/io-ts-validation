@@ -36,13 +36,13 @@ import { upsertSubassembly } from '../store/model/action';
 
 
 
-
+// "recDSfaVc2clkOcLR"
 
 interface IQueryAirtableProps extends JSX.IntrinsicAttributes {
-    id: string
+  subassemblyName: SubassemblyName
 }
 
-export const QueryAirtable = ({id}: IQueryAirtableProps ) => {
+export const QueryAirtable = ({subassemblyName}: IQueryAirtableProps ) => {
 
   const dispatch = useDispatch()
 
@@ -53,8 +53,8 @@ export const QueryAirtable = ({id}: IQueryAirtableProps ) => {
   type Variables = Partial<Subassembly>
 
   
-  const { loading, error, data } = useQuery<Data,Variables>(GET_SUBASSEMBLY, { variables: {id } } ); 
-
+  const { loading, error, data } = useQuery<Data,Variables>(GET_SUBASSEMBLY, { variables: {subassemblyName } } ); 
+  console.log(error); 
   if (data !== undefined) dispatch(upsertSubassembly(data.subassemblies[0]))
 
 //   const decoder = Subassemblies.asDecoder()s
