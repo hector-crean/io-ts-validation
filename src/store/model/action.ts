@@ -72,19 +72,5 @@ export function upsertProject(projects: Project): ModelStateActionTypes {
   }
 }
 
-/**
- * export type ModelStateActionTypes = 
-| UpsertSubassembliesAction
-| UpsertOwnersAction
-| UpsertPropertiesAction
-| UpsertEnergyPerformancesAction
-| UpsertBuildingsAction
-| UpsertPatternsAction
-| UpsertTasteProfilesAction
-| UpsertDesignersAction
-| UpsertProjectsAction
- */
-
-
 
 

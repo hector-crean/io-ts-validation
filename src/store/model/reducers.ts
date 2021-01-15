@@ -15,10 +15,10 @@ import {
   Property,
   EnergyPerformance,
   TasteProfile,
-  Designer
-
-
+  Designer,
+  Project
 } from './types'; 
+
 // import { ModuleName } from "../../types";
 
 
@@ -74,8 +74,8 @@ semigroupVoid
 const subassembliesLens = Lens.fromPath<ReduxProjectState>()(["entities", "subassemblies", 'byId']);
 const atSubassembly = (id: string) => Lens.fromProp<Record<string, Subassembly>>()(id)
 
-const projectsLens = Lens.fromPath<ReduxProjectState>()(["entities", "subassemblies", 'byId']);
-const atProjectLens = (id: string) => Lens.fromProp<Record<string,Subassembly>>()(id)
+const projectsLens = Lens.fromPath<ReduxProjectState>()(["entities", "projects", 'byId']);
+const atProjectLens = (id: string) => Lens.fromProp<Record<string,Project>>()(id)
 
 const ownersLens = Lens.fromPath<ReduxProjectState>()(["entities", "owners", 'byId']);
 const atOwners = (id: string) => Lens.fromProp<Record<string, Owner>>()(id)
@@ -89,8 +89,8 @@ const atBuilding = (id: string) => Lens.fromProp<Record<string, Building>>()(id)
 const energyPerformanceLens = Lens.fromPath<ReduxProjectState>()(["entities", "energyPerformances", 'byId']);
 const atEnergyPerformance = (id: string) => Lens.fromProp<Record<string, EnergyPerformance>>()(id)
 
-const patLens = Lens.fromPath<ReduxProjectState>()(["entities", "patterns", 'byId']);
-const atPattern = (id: string) => Lens.fromProp<Record<string, Pattern>>()(id)
+const patternsLens = Lens.fromPath<ReduxProjectState>()(["entities", "patterns", 'byId']);
+const atPatterns = (id: string) => Lens.fromProp<Record<string, Pattern>>()(id)
 
 
 const tasteProfileLens = Lens.fromPath<ReduxProjectState>()(["entities", "tasteProfiles", 'byId']);
@@ -283,7 +283,6 @@ const upsertEnergyPerformance = (energyPerformance: EnergyPerformance) => (state
 
 
 
-
 const upsertOwner = (owner: Owner) => (state: ReduxProjectState): ReduxProjectState => {
   return pipe(
     state,
@@ -313,10 +312,127 @@ const upsertOwner = (owner: Owner) => (state: ReduxProjectState): ReduxProjectSt
   )
 }
 
+const upsertPattern = (pattern: Pattern) => (state: ReduxProjectState): ReduxProjectState => {
+  return pipe(
+    state,
+    R.lookup(pattern.id),
+    O.fold(
+      () => {
+        return pipe(
+          state,
+          patternsLens.compose(atPatterns(pattern.id)).set({
+            ...pattern
+          })
+        )
+      },
+      (_owner) => {
+        return pipe(
+          state, 
+          patternsLens.compose(atPatterns(pattern.id)).modify(
+            (prevPattern): Pattern => ({
+              ...pattern,
+              // how do we want to merge? This is conundrum
+            })
+          )
+        )
+      }
+    ),
+  )
+}
 
+const upsertBuilding = (building: Building) => (state: ReduxProjectState): ReduxProjectState => {
+  return pipe(
+    state,
+    R.lookup(building.id),
+    O.fold(
+      () => {
+        return pipe(
+          state,
+          buildingsLens.compose(atBuilding(building.id)).set({
+            ...building
+          })
+        )
+      },
+      (_building) => {
+        return pipe(
+          state, 
+          buildingsLens.compose(atBuilding(building.id)).modify(
+            (prevBuilding): Building => ({
+              ...building,
+              // how do we want to merge? This is conundrum
+            })
+          )
+        )
+      }
+    ),
+    upsertPattern(building.buildingPattern),
+    upsertEnergyPerformance(building.energyPerformance)
+  )
+}
+
+
+const upsertProperty = (property: Property) => (state: ReduxProjectState): ReduxProjectState => {
+  return pipe(
+    state,
+    R.lookup(property.id),
+    O.fold(
+      () => {
+        return pipe(
+          state,
+          propertiesLens.compose(atProperies(property.id)).set({
+            ...property
+          })
+        )
+      },
+      (_property) => {
+        return pipe(
+          state, 
+          propertiesLens.compose(atProperies(property.id)).modify(
+            (prevProperty): Property => ({
+              ...property,
+              // how do we want to merge? This is conundrum
+            })
+          )
+        )
+      }
+    ),
+    upsertBuilding(property.propertyBuilding1),
+    upsertBuilding(property.propertyBuilding2),
+    upsertBuilding(property.propertyBuilding3),
+
+  )
+}
+
+const upsertProject = (project: Project) => (state: ReduxProjectState): ReduxProjectState => {
+  return pipe(
+    state,
+    R.lookup(project.id),
+    O.fold(
+      () => {
+        return pipe(
+          state,
+          projectsLens.compose(atProjectLens(project.id)).set({
+            ...project
+          })
+        )
+      },
+      (_property) => {
+        return pipe(
+          state, 
+          projectsLens.compose(atProjectLens(project.id)).modify(
+            (prevProject): Project => ({
+              ...project,
+              // how do we want to merge? This is conundrum
+            })
+          )
+        )
+      }
+    ),
+    upsertOwner(project.projectOwner),
+    upsertProperty(project.projectPropety)
   
-
-
+  )
+}
 
 
  export const reduxProjectReducer = (
@@ -326,6 +442,22 @@ const upsertOwner = (owner: Owner) => (state: ReduxProjectState): ReduxProjectSt
   switch(action.type) {
     case ModelStateActions.UPSERT_SUBASSEMBLIES:
       return upsertSubassembly(action.payload.subassembly)(state)
+    case ModelStateActions.UPSERT_BUILDINGS:
+      return upsertBuilding(action.payload.buildings)(state);
+    case ModelStateActions.UPSERT_DESIGNER:
+      return upsertDesigner(action.payload.designers)(state);
+    case ModelStateActions.UPSERT_ENERGY_PERFORMANCE:
+      return upsertEnergyPerformance(action.payload.energyPerformances)(state);
+    case ModelStateActions.UPSERT_OWNERS:
+      return upsertOwner(action.payload.owners)(state);
+    case ModelStateActions.UPSERT_PATTERN:
+      return upsertPattern(action.payload.patterns)(state);
+    case ModelStateActions.UPSERT_PROJECTS:
+      return upsertProject(action.payload.projects)(state); 
+    case ModelStateActions.UPSERT_PROPERTIES:
+      return upsertProperty(action.payload.properties)(state); 
+    case ModelStateActions.UPSERT_TASTE_PROFILE:
+      return upsertTasteProfile(action.payload.tasteProfiles)(state); 
     default:
       return state
   }  
