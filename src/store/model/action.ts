@@ -1,10 +1,5 @@
-
-import { SubassemblyName } from './types'; 
-import { 
-  Subassembly, Owner, Property, EnergyPerformance, Building, Pattern, TasteProfile, Designer, Project,
-  ModelStateActions, 
-  ModelStateActionTypes } from './types'
-
+import { Subassembly, Owner, Property, EnergyPerformance, Building, Pattern, TasteProfile, Designer, Project, SubassemblyName } from './types/static-types';
+import {ModelStateActions, ModelStateActionTypes} from './types/model-state-action-types'
 ///
 // Action constructors
 ///

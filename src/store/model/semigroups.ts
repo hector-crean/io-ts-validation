@@ -1,42 +1,13 @@
 // https://fp-training-app.now.sh/#semigroup
 
-
-
-// import { Eq, contramap, getStructEq, eqString } from 'fp-ts/Eq'
-// import { array, either } from 'fp-ts'
-// import { Either } from 'fp-ts/Either'
-
-// export interface IItem {
-//   type: "VALID" | "INVALID";
-//   value: string;
-// }
-
-// export const eqIItem: Eq<IItem> = getStructEq({
-//   type: contramap((t: "VALID" | "INVALID"): string => t)(eqString),
-//   value: eqString
-// })
-
-
-// const items: Array<Either<IItem, IItem>> = []
-
-// const uniqItems = uniq(either.getEq(eqIItem, eqIItem))(items)
-
-import {
-    Semigroup,
-    getStructSemigroup,
-    getJoinSemigroup,
-    // getMeetSemigroup,
-    // semigroupAny, 
-    // semigroupSum,
-    // getObjectSemigroup
-  } from 'fp-ts/Semigroup'
+import { Semigroup, getStructSemigroup, getJoinSemigroup } from 'fp-ts/Semigroup'
 import { getMonoid } from 'fp-ts/Array'
 import { ordNumber, contramap } from 'fp-ts/Ord'
 import * as R from 'fp-ts/Record'; 
 
 
-import { Subassemblies, SubassemblyName, Subassembly, Project, Property, Building, EnergyPerformance, Pattern, Owner, TasteProfile, Designer, NormalizedObject } from './types'; 
-
+import { Subassemblies, SubassemblyName, Subassembly, Project, Property, Building, EnergyPerformance, Pattern, Owner, TasteProfile, Designer } from './types/static-types'; 
+import { NormalizedObject} from './types/model-state-action-types'; 
 
 
 

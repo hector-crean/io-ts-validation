@@ -5,19 +5,8 @@ import { eqString } from "fp-ts/lib/Eq";
 import { pipe } from "fp-ts/pipeable";
 import { Lens } from "monocle-ts";
 
-import { 
-  SubassemblyName, ModelState, ModelStateActionTypes, ModelStateActions, IdString, NormalizedSubassemblies, Subassembly, Subassemblies, Building,
-  Pattern,
-  ReduxProjectState,
-  NormalizedObject,
-  UUID,
-  Owner,
-  Property,
-  EnergyPerformance,
-  TasteProfile,
-  Designer,
-  Project
-} from './types'; 
+import { ModelStateActionTypes, ModelStateActions, ReduxProjectState } from './types/model-state-action-types'
+import { Owner, Property, EnergyPerformance, TasteProfile, Designer, Project, Subassembly, Building, Pattern} from './types/static-types'
 
 // import { ModuleName } from "../../types";
 
@@ -35,32 +24,12 @@ updateMany: accepts an array of update objects, and updates all corresponding en
 upsertOne: accepts a single entity. If an entity with that ID exists, the fields in the update will be merged into the existing entity, with any matching fields overwriting the existing values. If the entity does not exist, it will be added.
 upsertMany: accepts an array of entities that will be upserted.
 map: accepts a callback function that will be run against each existing entity, and may return a change description object. Afterwards, all changes will be merged into the corresponding existing entities.
- * 
 
- Many of these can be reproduced using the semigroup operations: 
- 
-getDualSemigroup
-getFirstSemigroup
-getFunctionSemigroup
-getIntercalateSemigroup
+Many of these can be reproduced using the semigroup operations: 
 getJoinSemigroup - Get a semigroup where concat will return the maximum, based on the provided order.
-
-
-getLastSemigroup
 getMeetSemigroup - Get a semigroup where concat will return the minimum, based on the provided order.
-
-getObjectSemigroup
-getStructSemigroup
-getTupleSemigroup
 semigroupAll - boolean semigroup under conjunction.
-
 semigroupAny - boolean semigroup under disjunction.
-
-
-semigroupProduct
-semigroupString
-semigroupSum
-semigroupVoid
  */
 
 
