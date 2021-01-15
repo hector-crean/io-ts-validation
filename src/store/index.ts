@@ -1,5 +1,5 @@
 
-import { modelReducer } from './model/reducers'
+import { reduxProjectReducer } from './model/reducers'
 
 import { combineReducers }  from 'redux'; 
 import thunkMiddleware from 'redux-thunk'
@@ -8,7 +8,7 @@ import { configureStore } from '@reduxjs/toolkit'
 
 
 export const rootReducer = combineReducers({
-  model: modelReducer
+  model: reduxProjectReducer
 })
 
 
@@ -26,6 +26,5 @@ export const store = configureStore({
 
 export type AppDispatch = typeof store.dispatch
 export type RootState = ReturnType<typeof rootReducer>
-
 
 

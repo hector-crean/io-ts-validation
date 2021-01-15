@@ -1,17 +1,20 @@
 
-import { ModuleName } from '../../types'
-import { AlmereModule, ModelStateActions, ModelStateActionTypes } from './types'
+import { SubassemblyName } from '../../types'
+import { Subassembly, ModelStateActions, ModelStateActionTypes } from './types'
 
 ///
 // Action constructors
 ///
-export function upsertAlmereModule(almereModule: AlmereModule): ModelStateActionTypes {
+export function upsertSubassembly(subassembly: Subassembly): ModelStateActionTypes {
   return {
-    type: ModelStateActions.UPSERT_ALMERE_MODULE,
-    payload: {almereModule }
-
+    type: ModelStateActions.UPSERT_SUBASSEMBLIES,
+    payload: { subassembly }
   }
 }
+
+
+
+
 
 
 

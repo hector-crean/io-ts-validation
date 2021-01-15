@@ -4,6 +4,7 @@ import * as E from 'fp-ts/Either';
 
 import { QueryResult } from '@apollo/client'; 
 import * as t from "io-ts";
+import { Subassembly } from '../store/model/types';
 
 /////////
 // Utility Types
@@ -54,7 +55,7 @@ const NumberFromString: NumberFromStringC = new t.Type<number, string, unknown>(
 
 const BuildingSystem = t.union([t.literal("WikiHouseSwift"),t.literal("WikiHouseSkylark")])
 const LocationClass = t.union([t.literal("EnvelopeSection"), t.literal("Wall")])
-const ModuleName = t.union([
+const SubassemblyName = t.union([
   t.literal('Module-A1_05'),
   t.literal('Module-A1_04'),
   t.literal('Module-A1_03'),
@@ -106,8 +107,8 @@ const ModuleName = t.union([
   t.literal('Module-E1_01'),
   t.literal('Module-E1_v/a')
 ])
-type ModuleName = t.TypeOf<typeof ModuleName>
-export type {ModuleName}
+type SubassemblyName = t.TypeOf<typeof SubassemblyName>
+export type {SubassemblyName}
 const PrimaryMaterial = t.literal("Timber.Plywood")
 const RoofPitchType = t.union([t.literal('Dual-centre'), t.literal('Mono'), t.literal('Asymetric'), t.literal('Parapet'), t.literal('Flat')])
 const SpansNStories = t.union([t.literal('1'), t.literal('2'), t.literal('3')])
@@ -118,7 +119,7 @@ const StructureAlmere = t.partial({
     buildingSystem: BuildingSystem,
     id: t.string,
     locationClass: LocationClass,
-    moduleName: ModuleName,
+    moduleName: SubassemblyName,
     pitchedAngle1: t.number,
     pitchedAngle2: t.number,
     primaryMaterial: PrimaryMaterial,
