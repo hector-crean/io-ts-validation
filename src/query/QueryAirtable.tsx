@@ -2,13 +2,13 @@ import React, {useState} from 'react';
 import { useQuery, gql } from "@apollo/client";
 
 
-import { decodeWith } from '../store/model/types/model-state-action-types'; 
-import { SubassemblyName, Subassemblies, Subassembly } from '../store/model/types/static-types'
+import { decodeWith } from '../store/Dashboard/types/model-state-action-types'; 
+import { SubassemblyName, Subassemblies, Subassembly } from '../store/Dashboard/types/static-types'
 
 import { GET_PROJECT, GET_SUBASSEMBLY } from './queries'
 
 import { useDispatch, useSelector} from 'react-redux'; 
-import { upsertSubassembly } from '../store/model/action'; 
+import { upsertSubassembly } from '../store/Dashboard/action'; 
 
 
 

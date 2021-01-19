@@ -1,5 +1,6 @@
 
-import { reduxProjectReducer } from './model/reducers'
+import { dashboardReducer } from './Dashboard/reducers'
+import { editorReducer } from './Editor/reducers'
 
 import { combineReducers }  from 'redux'; 
 import thunkMiddleware from 'redux-thunk'
@@ -8,7 +9,8 @@ import { configureStore } from '@reduxjs/toolkit'
 
 
 export const rootReducer = combineReducers({
-  model: reduxProjectReducer
+  dashboard: dashboardReducer,
+  editor: editorReducer
 })
 
 

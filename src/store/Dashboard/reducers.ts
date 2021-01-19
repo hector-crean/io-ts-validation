@@ -5,7 +5,7 @@ import { eqString } from "fp-ts/lib/Eq";
 import { pipe } from "fp-ts/pipeable";
 import { Lens } from "monocle-ts";
 
-import { ModelStateActionTypes, ModelStateActions, ReduxProjectState } from './types/model-state-action-types'
+import { ModelStateActionTypes, ModelStateActions, DashboardState } from './types/model-state-action-types'
 import { Owner, Property, EnergyPerformance, TasteProfile, Designer, Project, Subassembly, Building, Pattern} from './types/static-types'
 
 // import { ModuleName } from "../../types";
@@ -40,38 +40,38 @@ semigroupAny - boolean semigroup under disjunction.
  * Optics
  */
 
-const subassembliesLens = Lens.fromPath<ReduxProjectState>()(["entities", "subassemblies", 'byId']);
+const subassembliesLens = Lens.fromPath<DashboardState>()(["entities", "subassemblies", 'byId']);
 const atSubassembly = (id: string) => Lens.fromProp<Record<string, Subassembly>>()(id)
 
-const projectsLens = Lens.fromPath<ReduxProjectState>()(["entities", "projects", 'byId']);
+const projectsLens = Lens.fromPath<DashboardState>()(["entities", "projects", 'byId']);
 const atProjectLens = (id: string) => Lens.fromProp<Record<string,Project>>()(id)
 
-const ownersLens = Lens.fromPath<ReduxProjectState>()(["entities", "owners", 'byId']);
+const ownersLens = Lens.fromPath<DashboardState>()(["entities", "owners", 'byId']);
 const atOwners = (id: string) => Lens.fromProp<Record<string, Owner>>()(id)
 
-const propertiesLens = Lens.fromPath<ReduxProjectState>()(["entities", "properties", 'byId']);
+const propertiesLens = Lens.fromPath<DashboardState>()(["entities", "properties", 'byId']);
 const atProperies = (id: string) => Lens.fromProp<Record<string,Property>>()(id)
 
-const buildingsLens = Lens.fromPath<ReduxProjectState>()(["entities", "buildings", 'byId']);
+const buildingsLens = Lens.fromPath<DashboardState>()(["entities", "buildings", 'byId']);
 const atBuilding = (id: string) => Lens.fromProp<Record<string, Building>>()(id)
 
-const energyPerformanceLens = Lens.fromPath<ReduxProjectState>()(["entities", "energyPerformances", 'byId']);
+const energyPerformanceLens = Lens.fromPath<DashboardState>()(["entities", "energyPerformances", 'byId']);
 const atEnergyPerformance = (id: string) => Lens.fromProp<Record<string, EnergyPerformance>>()(id)
 
-const patternsLens = Lens.fromPath<ReduxProjectState>()(["entities", "patterns", 'byId']);
+const patternsLens = Lens.fromPath<DashboardState>()(["entities", "patterns", 'byId']);
 const atPatterns = (id: string) => Lens.fromProp<Record<string, Pattern>>()(id)
 
 
-const tasteProfileLens = Lens.fromPath<ReduxProjectState>()(["entities", "tasteProfiles", 'byId']);
+const tasteProfileLens = Lens.fromPath<DashboardState>()(["entities", "tasteProfiles", 'byId']);
 const atTasteProfile = (id: string) => Lens.fromProp<Record<string, TasteProfile>>()(id)
 
-const designerLens = Lens.fromPath<ReduxProjectState>()(["entities", "designers", 'byId']);
+const designerLens = Lens.fromPath<DashboardState>()(["entities", "designers", 'byId']);
 const atDesigner = (id: string) => Lens.fromProp<Record<string, Designer>>()(id)
 
 
 
 
- export const INITIAL_STATE: ReduxProjectState = {
+ export const INITIAL_STATE: DashboardState = {
   entities: {
     projects: {byId: R.empty, allIds: []},
     owners: {byId: R.empty, allIds: []},
@@ -100,21 +100,21 @@ const atDesigner = (id: string) => Lens.fromProp<Record<string, Designer>>()(id)
 
 declare type Upsert = <E extends Entity, E1, E2, E3>(
   entity: E, 
-  lens: Lens<ReduxProjectState, Record<string, E>>, 
+  lens: Lens<DashboardState, Record<string, E>>, 
   lensor: (id: string) => Lens<Record<string, E>, E>, 
   upsertExternal1: E1 extends E ? Upsert: undefined,
   upsertExternal2: E2 extends E ? Upsert: undefined, 
   upsertExternal3: E3 extends E ? Upsert: undefined
-) => (state: ReduxProjectState) => ReduxProjectState
+) => (state: DashboardState) => DashboardState
 
 const upsert = <E extends Entity, E1, E2, E3>(
   entity: E, 
-  lens: Lens<ReduxProjectState, Record<string, E>>, 
+  lens: Lens<DashboardState, Record<string, E>>, 
   lensor: (id: string) => Lens<Record<string, E>, E>, 
   // upsertExternal1: E1 extends E ? Upsert: undefined,
   // upsertExternal2: E2 extends E ? Upsert: undefined, 
   // upsertExternal3: E3 extends E ? Upsert: undefined
-) => (state: ReduxProjectState): ReduxProjectState => {
+) => (state: DashboardState): DashboardState => {
    return pipe(
      state,
      R.lookup(entity.id),
@@ -144,7 +144,7 @@ const upsert = <E extends Entity, E1, E2, E3>(
   
      
 
-const upsertSubassembly = (subassembly: Subassembly) => (state: ReduxProjectState): ReduxProjectState => {
+const upsertSubassembly = (subassembly: Subassembly) => (state: DashboardState): DashboardState => {
   return pipe(
     state,
     R.lookup(subassembly.id),
@@ -170,7 +170,7 @@ const upsertSubassembly = (subassembly: Subassembly) => (state: ReduxProjectStat
     );
 };
 
-const upsertDesigner = (designer: Designer) => (state: ReduxProjectState): ReduxProjectState => {
+const upsertDesigner = (designer: Designer) => (state: DashboardState): DashboardState => {
   return pipe(
     state,
     R.lookup(designer.id),
@@ -200,7 +200,7 @@ const upsertDesigner = (designer: Designer) => (state: ReduxProjectState): Redux
     );
 };
 
-const upsertTasteProfile = (tasteProfile: TasteProfile) => (state: ReduxProjectState): ReduxProjectState => {
+const upsertTasteProfile = (tasteProfile: TasteProfile) => (state: DashboardState): DashboardState => {
   return pipe(
     state,
     R.lookup(tasteProfile.id),
@@ -225,7 +225,7 @@ const upsertTasteProfile = (tasteProfile: TasteProfile) => (state: ReduxProjectS
     );
 };
 
-const upsertEnergyPerformance = (energyPerformance: EnergyPerformance) => (state: ReduxProjectState): ReduxProjectState => {
+const upsertEnergyPerformance = (energyPerformance: EnergyPerformance) => (state: DashboardState): DashboardState => {
   return pipe(
     state,
     R.lookup(energyPerformance.id),
@@ -252,7 +252,7 @@ const upsertEnergyPerformance = (energyPerformance: EnergyPerformance) => (state
 
 
 
-const upsertOwner = (owner: Owner) => (state: ReduxProjectState): ReduxProjectState => {
+const upsertOwner = (owner: Owner) => (state: DashboardState): DashboardState => {
   return pipe(
     state,
     R.lookup(owner.id),
@@ -281,7 +281,7 @@ const upsertOwner = (owner: Owner) => (state: ReduxProjectState): ReduxProjectSt
   )
 }
 
-const upsertPattern = (pattern: Pattern) => (state: ReduxProjectState): ReduxProjectState => {
+const upsertPattern = (pattern: Pattern) => (state: DashboardState): DashboardState => {
   return pipe(
     state,
     R.lookup(pattern.id),
@@ -309,7 +309,7 @@ const upsertPattern = (pattern: Pattern) => (state: ReduxProjectState): ReduxPro
   )
 }
 
-const upsertBuilding = (building: Building) => (state: ReduxProjectState): ReduxProjectState => {
+const upsertBuilding = (building: Building) => (state: DashboardState): DashboardState => {
   return pipe(
     state,
     R.lookup(building.id),
@@ -340,7 +340,7 @@ const upsertBuilding = (building: Building) => (state: ReduxProjectState): Redux
 }
 
 
-const upsertProperty = (property: Property) => (state: ReduxProjectState): ReduxProjectState => {
+const upsertProperty = (property: Property) => (state: DashboardState): DashboardState => {
   return pipe(
     state,
     R.lookup(property.id),
@@ -372,7 +372,7 @@ const upsertProperty = (property: Property) => (state: ReduxProjectState): Redux
   )
 }
 
-const upsertProject = (project: Project) => (state: ReduxProjectState): ReduxProjectState => {
+const upsertProject = (project: Project) => (state: DashboardState): DashboardState => {
   return pipe(
     state,
     R.lookup(project.id),
@@ -404,10 +404,10 @@ const upsertProject = (project: Project) => (state: ReduxProjectState): ReduxPro
 }
 
 
- export const reduxProjectReducer = (
+ export const dashboardReducer = (
    state = INITIAL_STATE,
    action: ModelStateActionTypes
- ): ReduxProjectState => {
+ ): DashboardState => {
   switch(action.type) {
     case ModelStateActions.UPSERT_SUBASSEMBLIES:
       return upsertSubassembly(action.payload.subassembly)(state)

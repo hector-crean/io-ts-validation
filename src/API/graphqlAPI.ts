@@ -21,8 +21,8 @@ import * as t from 'io-ts'
 import { Users, Answer } from './types/static-types'; 
 import { users, answer } from './types/iots-types'; 
 
-import { Project } from '../store/model/types/static-types'; 
-import { Project as projectCodec } from '../store/model/types/composite-types'
+import { Project } from '../store/Dashboard/types/static-types'; 
+import { Project as projectCodec } from '../store/Dashboard/types/composite-types'
 import { client } from '../client';
 
 const query = gql`query MyQuery {

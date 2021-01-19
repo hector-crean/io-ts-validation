@@ -6,9 +6,91 @@ import { Light } from './Light';
 import { Perf } from 'r3f-perf';
 import * as THREE from 'three'; 
 import ClippingSlider from './ClippingSlider/ClippingSlider'; 
-
+import { useSpring } from 'react-spring'; 
 //Models
 import { Container } from './Container/Container'
+
+// Icons
+import Icon from '@material-ui/core/Icon';
+import FullscreenIcon from '@material-ui/icons/Fullscreen';
+import { Object3D, Vector3 } from 'three';
+
+{/* <Icon>
+  <FullscreenIcon/>
+</Icon> */}
+
+
+/////
+// Camera
+/////
+
+const Dolly = (targetObject: THREE.Object3D): void => {
+  // This one makes the camera move in and out
+  useFrame(({ clock, camera }) => {
+    // Move camera to a point where you can more easily see the object under inspection
+    // camera.position.z = 50 + Math.sin(clock.getElapsedTime()) * 30
+    // Look at the object under isnpection
+    const {x,y,z} = targetObject.position; 
+    camera.lookAt(new Vector3(x,y,z)) 
+
+    // This process should be animated
+    // just use .lerp ( x : Float, y : Float, t : Float ) : Float ? 
+
+    // camera.updateProjectionMatrix()
+
+  })
+}
+
+
+// // alternate 
+// const Controls = (targetObject: Object3D) => {
+//   const { gl, camera } = useThree()
+  
+  
+
+//   const [props, set ] 
+//   = useSpring<{
+//     from: {x: number, y: number, z: number};
+//     to: { x: number, y: number, z: number };
+//     onFrame: (...args: any) => void;
+//     reverse: boolean;
+//     onRest: (...args: any) => void;
+//   }>(
+//     () => (
+//       {
+//         from: {x: camera.position.x, y: camera.position.y, z: camera.position.z}, 
+//         to: {x: targetObject.position.x, y: targetObject.position.y, z: targetObject.position.z},
+//         onFrame: ({to}: {to : {x: number, y: number, z: number}}) => { 
+//           camera.position.x = to.x; 
+//           camera.position.y = to.y; 
+//           camera.position.z = to.z; 
+//         },
+//         reverse: false,
+//         onRest: () => {}
+//       }
+//     )
+//   )
+
+
+//   useSpring<{
+//     from: unknown;
+//     z: unknown;
+//     onFrame: (...args:any) => void;
+//   }>({
+//     from: {
+//       z: 300
+//     },
+//     z: 2,
+//     onFrame: ({ z }) => {
+//       camera.position.z = z
+//     }
+//   })
+
+//   return <OrbitControls target={[0, 0, 0]} args={[camera, gl.domElement]} />
+// }
+
+
+
 
 //////////////////////////////////
 // Scene
@@ -59,6 +141,7 @@ const EditorScene = () => {
         }>
           {/** PUT MODELS HERE  */}
           <Container/>
+          
 
 
 
@@ -75,7 +158,7 @@ const EditorScene = () => {
           {/*******************/}
       </Suspense>
 
-      <OrbitControls 
+      {/* <OrbitControls 
         //Get ref from the store?
         ref={orbitControlsRef} 
         enablePan={true} 
@@ -90,7 +173,9 @@ const EditorScene = () => {
         enabled
         minDistance={5}
         maxDistance={100}
-      />   
+      />    */}
+      {/* <Controls/> */}
+      {/* <Dolly /> */}
       <Perf />
 
     </>

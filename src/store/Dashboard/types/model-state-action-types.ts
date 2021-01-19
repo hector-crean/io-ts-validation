@@ -20,7 +20,7 @@ export interface NormalizedObject<T> {
  */
 
 
-export type ReduxProjectState = {
+export type DashboardState = {
   entities: {
     projects: NormalizedObject<Project>,
     owners: NormalizedObject<Owner>,

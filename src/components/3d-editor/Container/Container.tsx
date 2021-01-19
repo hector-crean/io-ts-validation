@@ -7,10 +7,16 @@ import { Html, HtmlProps} from '@react-three/drei';
 import { IContainer, makeContainer, IFaces, } from '../../../Graph'
 import { meshBounds } from "@react-three/drei";
 
+import { useSpring, animated } from 'react-spring'; 
+
 // For the tooltip
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Tooltip from '@material-ui/core/Tooltip';
+
+
+// On double click: zoom in and isolate the container -> view from particular angle. 
+// useSpring ?  Must be global state ? 
 
 
 /// Tooltip
@@ -55,6 +61,9 @@ const ContainerTooltip = (): JSX.Element => {
     )
 }
 
+
+
+
 /// Container 
 
 interface State {
@@ -67,12 +76,16 @@ interface State {
 
     //ui - mesh props
     meshRef: React.MutableRefObject<typeof Mesh | undefined> | undefined;
-    meshHoveredOver: boolean;
+    meshHoveredOver: boolean; //usful for ui -> so people know where they're clicking. (possible to turn this feature off ? )
     meshActive: boolean;
-    meshVisible: boolean;
+    meshVisible: boolean; // for when we want to single out a particular container
+    internalLightsOn?: boolean; // for turning on and off internal light sources... 
     toolTipVisible: boolean;
+
     // meshGeometry: THREE.Geometry; 
     // meshMaterial: THREE.Material
+
+
 } 
 
 
@@ -108,11 +121,9 @@ const containerReducer = (state: State, action: Action) => {
       return {...state, meshHoveredOver: false};
     case "onContextMenu":
       action.payload.stopPropagation()
-      console.log('context menu')
       return {...state, toolTipVisible: !state.toolTipVisible}
     case "onDoubleClick":
       action.payload.stopPropagation()
-      console.log('double clicked')
       return {...state }; // double click should probably isolate the mesh
     default:
       throw new Error();
@@ -122,7 +133,7 @@ const containerReducer = (state: State, action: Action) => {
 /* Elm architecture: model (i.e state), view (i.e manifestation of the state), update (i.e actions dispatched by events to update state) */
 export const Container = (props: MeshProps): JSX.Element => {
   const [state, dispatch] = React.useReducer(containerReducer, initalState);
-  
+  console.log(state); 
   return (
     <mesh
       {...props}
@@ -158,8 +169,11 @@ export const Container = (props: MeshProps): JSX.Element => {
       onWheel         = {(e: WheelEvent)    => {}}
     >
       {/** View */}
+      {/** --- Geometry  */}
       <boxBufferGeometry args={[1, 1, 1]} />
+      {/** --- Material  */}
       <meshStandardMaterial color={state.meshHoveredOver || state.meshActive ? 'hotpink' : 'orange'} />
+      {/** --- Tooltip  */}
       {state.toolTipVisible && 
         <Html>
             <ContainerTooltip/>
@@ -170,7 +184,8 @@ export const Container = (props: MeshProps): JSX.Element => {
 }
 
 
-
+// React components
+const AnimatedContainer = animated(Container)
 
 
 

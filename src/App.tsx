@@ -3,11 +3,11 @@ import './app.scss';
 
 
 import { QueryAirtable } from './query/QueryAirtable'; 
-import { upsertSubassembly } from './store/model/action'; 
+import { upsertSubassembly } from './store/Dashboard/action'; 
 import { useDispatch, useSelector} from 'react-redux'; 
 
 import { client } from './client'; 
-import { Project as projectCodec } from './store/model/types/composite-types'
+import { Project as projectCodec } from './store/Dashboard/types/composite-types'
 import { GET_PROJECT } from './API/query'; 
 
 import { graphqlGetEither, runProgram } from './API/graphqlAPI'; 
