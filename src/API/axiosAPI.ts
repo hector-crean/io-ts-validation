@@ -63,4 +63,4 @@ const runProgram = pipe(
   )
 )();
 
-runProgram.then(console.log)
+// runProgram.then(console.log)

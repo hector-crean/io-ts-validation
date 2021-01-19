@@ -1,0 +1,16 @@
+#clipping-slider {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 100px;
+    padding: 40px 10px;
+    z-index: 2;
+    opacity: 0;
+    transition: opacity 1s;
+  }
+  
+#clipping-slider:hover {
+    opacity: 1;
+}
+  

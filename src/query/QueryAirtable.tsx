@@ -2,11 +2,13 @@ import React, {useState} from 'react';
 import { useQuery, gql } from "@apollo/client";
 
 
-// import { decodeWith, SubassemblyName, Subassemblies, Subassembly  } from '../store/model/types'; 
-// import { GET_PROJECT, GET_SUBASSEMBLY } from './queries'
+import { decodeWith } from '../store/model/types/model-state-action-types'; 
+import { SubassemblyName, Subassemblies, Subassembly } from '../store/model/types/static-types'
 
-// import { useDispatch, useSelector} from 'react-redux'; 
-// import { upsertSubassembly } from '../store/model/action'; 
+import { GET_PROJECT, GET_SUBASSEMBLY } from './queries'
+
+import { useDispatch, useSelector} from 'react-redux'; 
+import { upsertSubassembly } from '../store/model/action'; 
 
 
 
@@ -38,32 +40,32 @@ import { useQuery, gql } from "@apollo/client";
 
 // // "recDSfaVc2clkOcLR"
 
-// interface IQueryAirtableProps extends JSX.IntrinsicAttributes {
-//   subassemblyName: SubassemblyName
-// }
+interface IQueryAirtableProps extends JSX.IntrinsicAttributes {
+  subassemblyName: SubassemblyName
+}
 
-// export const QueryAirtable = ({subassemblyName}: IQueryAirtableProps ) => {
+export const QueryAirtable = ({subassemblyName}: IQueryAirtableProps ) => {
 
-//   const dispatch = useDispatch()
+  const dispatch = useDispatch()
 
-//   const [moduleName, setModuleName] = useState<SubassemblyName>()
-//   // setModuleName(_moduleName); 
+  const [moduleName, setModuleName] = useState<SubassemblyName>()
+  // setModuleName(_moduleName); 
 
-//   type Data = {subassemblies: Subassembly[]}
-//   type Variables = Partial<Subassembly>
+  type Data = {subassemblies: Subassembly[]}
+  type Variables = Partial<Subassembly>
 
   
-//   const { loading, error, data } = useQuery<Data,Variables>(GET_SUBASSEMBLY, { variables: {subassemblyName } } ); 
-//   console.log(error); 
-//   if (data !== undefined) dispatch(upsertSubassembly(data.subassemblies[0]))
+  const { loading, error, data } = useQuery<Data,Variables>(GET_SUBASSEMBLY, { variables: {subassemblyName } } ); 
+  console.log(error); 
+  if (data !== undefined) dispatch(upsertSubassembly(data.subassemblies[0]))
 
-// //   const decoder = Subassemblies.asDecoder()s
-// //   const result = decodeWith(decoder)(data?.subassemblies); 
-//   // console.log(result)
+//   const decoder = Subassemblies.asDecoder()s
+//   const result = decodeWith(decoder)(data?.subassemblies); 
+  // console.log(result)
  
-//   return (
-//     <div>
-//       <pre>{ JSON.stringify(data, null, 2) }</pre>
-//     </div>
-//   );
-// }
+  return (
+    <div>
+      <pre>{ JSON.stringify(data, null, 2) }</pre>
+    </div>
+  );
+}

@@ -1,0 +1,46 @@
+@import './components/3d-editor/ClippingSlider/clippingSlider'; 
+@import './components/3d-editor/Container/container'; 
+* {
+    box-sizing: border-box;
+  }
+  
+  html,
+  body,
+  #root {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background: #ccc;
+    /* background-color: #272730; */
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+  }
+
+  #three {
+    flex: 1;
+  }
+  
+  #two {
+    width: 400px;
+    background: white;
+    padding: 20px;
+  }
+  
+  body {
+    position: fixed;
+    overflow: hidden;
+    overscroll-behavior-y: none;
+    font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir,
+      helvetica neue, helvetica, ubuntu, roboto, noto, segoe ui, arial, sans-serif;
+    background: white,
+  }
+
+

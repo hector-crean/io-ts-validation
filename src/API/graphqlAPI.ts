@@ -2,6 +2,7 @@
 // https://dev.to/gnomff_65/fp-ts-sequencet-and-sweet-sweet-async-typed-fp-5aop
 // https://github.com/ksaaskil/fp-gitlab-example
 
+
 import { ApolloError, ApolloQueryResult, ApolloClient, gql, DocumentNode, NormalizedCacheObject} from '@apollo/client'; 
 import { GET_PROJECT } from './query'; 
 
@@ -24,7 +25,7 @@ import { Project } from '../store/model/types/static-types';
 import { Project as projectCodec } from '../store/model/types/composite-types'
 import { client } from '../client';
 
-const query = gql`query{
+const query = gql`query MyQuery {
   projects(id: "recDSfaVc2clkOcLR") {
     id
     projectOwner {
@@ -32,59 +33,45 @@ const query = gql`query{
       ownerName
       ownerTasteProfile {
         desireColour
-        id
         desireColourMeta
+        id
       }
     }
     projectProperty {
       id
       propertyAddress
       propertyBoundary
-      propertyDescription
-      propertyId
-      propertyName
-      propertyNorthing
-      propertyType
-      propertyUprn
-      propertyBuilding2
-      propertyBuilding3
       propertyBuilding1 {
-        id
         buildingEnergyPerformance {
           energyAirflowExchange
           energyDoorUValue
           energyFloorUValue
-          energyId
           energyMeanTemperatureExternal
           energyRoofUValue
           energyRooflightUValue
           energySpaceCoolingType
-          energySpaceHeatingType
           energyTariffElectricity
+          energySpaceHeatingType
           energyTariffGas
           energyTempInternalAdjusted
           energyVentilationType
           energyWallUValue
           energyWaterHeatingType
-          energyWindowUValue
           id
+          energyWindowUValue
         }
         buildingFoundationType
-        buildingId
         buildingName
         buildingNumberBathrooms
         buildingPattern {
           id
           patternBarcode
-          patternId
-          patternJsonSchema
           patternRating
           patternSubassembliesUsed {
             id
             subassemblyAssemblyTimeInDays
             subassemblyBuildingSystem
             subassemblyDesigner
-            subassemblyId
             subassemblyLocationClass
             subassemblyName
             subassemblyPitchedAngle1
@@ -99,7 +86,89 @@ const query = gql`query{
             subassemblyZDimension
           }
         }
+        id
       }
+      propertyBuilding2
+      propertyBuilding3
+      propertyDescription
+      propertyName
+      propertyNorthing
+      propertyType
+      propertyUprn
+    }
+  }
+}
+`
+const query2 = gql`query MyQuery {
+  projects(id: "recDSfaVc2clkOcLR") {
+    id
+    projectOwner {
+      id
+      ownerName
+      ownerTasteProfile {
+        desireColour
+        desireColourMeta
+        id
+      }
+    }
+    projectProperty {
+      id
+      propertyAddress
+      propertyBoundary
+      propertyBuilding1 {
+        buildingEnergyPerformance {
+          energyAirflowExchange
+          energyDoorUValue
+          energyFloorUValue
+          energyMeanTemperatureExternal
+          energyRoofUValue
+          energyRooflightUValue
+          energySpaceCoolingType
+          energyTariffElectricity
+          energySpaceHeatingType
+          energyTariffGas
+          energyTempInternalAdjusted
+          energyVentilationType
+          energyWallUValue
+          energyWaterHeatingType
+          id
+          energyWindowUValue
+        }
+        buildingFoundationType
+        buildingName
+        buildingNumberBathrooms
+        buildingPattern {
+          id
+          patternBarcode
+          patternRating
+          patternSubassembliesUsed {
+            id
+            subassemblyAssemblyTimeInDays
+            subassemblyBuildingSystem
+            subassemblyDesigner
+            subassemblyLocationClass
+            subassemblyName
+            subassemblyPitchedAngle1
+            subassemblyPitchedAngle2
+            subassemblyPrimaryMaterial
+            subassemblyRoofPitchType
+            subassemblySpansNStories
+            subassemblyThickness
+            subassemblyUnitCost
+            subassemblyXDimension
+            subassemblyYDimension
+            subassemblyZDimension
+          }
+        }
+        id
+      }
+      propertyBuilding2
+      propertyBuilding3
+      propertyDescription
+      propertyName
+      propertyNorthing
+      propertyType
+      propertyUprn
     }
   }
 }
@@ -142,7 +211,9 @@ export const graphqlGetEither = <A>(
 
 
 export const runProgram = pipe(
-  graphqlGetEither(client, query, projectCodec),
+  sequenceT(TE.taskEither)(
+    graphqlGetEither(client, query2, projectCodec)
+  ),
   TE.fold(
     (errors) => T.of(errors.message),
     (project1) => T.of(`\nThe answer was ${project1} for all of you`),
