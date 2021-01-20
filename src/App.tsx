@@ -5,14 +5,14 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 
 
-
-
-
-
 // Pages
 
 import Editor from './components/3d-editor/Editor'
-import GreetingPage from './page/greeting-page/GreetingPage'; 
+import ComponentInFocus from './page/component-in-focus-page/ComponentInFocus'; 
+
+
+
+//Global state: setup scene graph -> 
 
 
 
@@ -29,7 +29,7 @@ const App = ({}: AppProps) => {
    
   <Switch>
       <Route path="/" component={Editor} /> 
-      {/* <Route path="/" component={GreetingPage} />  */}
+      <Route path="/in-focus" component={ComponentInFocus} /> 
 
   </Switch>        
   

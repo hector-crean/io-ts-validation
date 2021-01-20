@@ -7,7 +7,6 @@ import { ApolloError, ApolloQueryResult, ApolloClient, gql, DocumentNode, Normal
 import { GET_PROJECT } from './query'; 
 
 
-import axios, { AxiosResponse } from 'axios'
 import { flatten, map } from 'fp-ts/lib/Array'
 import * as TE from 'fp-ts/lib/TaskEither'
 import * as E from 'fp-ts/lib/Either'
@@ -21,8 +20,8 @@ import * as t from 'io-ts'
 import { Users, Answer } from './types/static-types'; 
 import { users, answer } from './types/iots-types'; 
 
-import { Project } from '../store/Dashboard/types/static-types'; 
-import { Project as projectCodec } from '../store/Dashboard/types/composite-types'
+import { Project } from '../store/Shared/types/static-types'; 
+import { Project as projectCodec } from '../store/Shared/types/composite-types'
 import { client } from '../client';
 
 const query = gql`query MyQuery {

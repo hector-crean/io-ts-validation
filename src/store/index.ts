@@ -1,5 +1,5 @@
 
-import { dashboardReducer } from './Dashboard/reducers'
+import { dashboardReducer } from './Shared/reducers'
 import { editorReducer } from './Editor/reducers'
 
 import { combineReducers }  from 'redux'; 

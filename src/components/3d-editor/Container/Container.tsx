@@ -15,7 +15,7 @@ import Button from '@material-ui/core/Button';
 import Tooltip from '@material-ui/core/Tooltip';
 
 //Global State
-import { useDispatch, useSelector} from 'react-redux'; 
+import { useDispatch } from 'react-redux'; 
 import { bringAllContainersIntoFocus, bringContainerIntoFocus } from '../../../store/Editor/actions'; 
 
 
@@ -173,7 +173,7 @@ export const Container = (props: MeshProps): JSX.Element => {
       onPointerOver   = {(e: PointerEvent)  => { return localDispatch({_tag: "onPointerOver",  payload: e})  }}
       onPointerOut    = {(e: PointerEvent)  => { return localDispatch({_tag: "onPointerOut",   payload: e})  }}
       onContextMenu   = {(e: MouseEvent)    => { return localDispatch({_tag: "onContextMenu",  payload: e})  }}
-      onDoubleClick   = {(e: MouseEvent)    => { globalDispatch(bringContainerIntoFocus({id: state.containerID, visible: true}))  }}
+      onDoubleClick   = {(e: MouseEvent)    => { /*globalDispatch(bringContainerIntoFocus({id: state.containerID, visible: true}))*/  }}
       onPointerUp     = {(e: PointerEvent)  => {  }}
       onPointerDown   = {(e: PointerEvent)  => {}}
       onPointerMove   = {(e: PointerEvent)  => {}}
