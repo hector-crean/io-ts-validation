@@ -14,6 +14,13 @@ import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Tooltip from '@material-ui/core/Tooltip';
 
+//Global State
+import { useDispatch, useSelector} from 'react-redux'; 
+import { bringAllContainersIntoFocus, bringContainerIntoFocus } from '../../../store/Editor/actions'; 
+
+
+
+
 
 // On double click: zoom in and isolate the container -> view from particular angle. 
 // useSpring ?  Must be global state ? 
@@ -108,7 +115,7 @@ type Action =
   | { _tag: "onDoubleClick",  payload: MouseEvent    }
 
 
-const containerReducer = (state: State, action: Action) => {
+const ContainerReducer = (state: State, action: Action) => {
   switch (action._tag) {
     case "onClick":
       action.payload.stopPropagation()
@@ -124,7 +131,8 @@ const containerReducer = (state: State, action: Action) => {
       return {...state, toolTipVisible: !state.toolTipVisible}
     case "onDoubleClick":
       action.payload.stopPropagation()
-      return {...state }; // double click should probably isolate the mesh
+      // we update global state, which should in turn update our local state
+      return {...state, meshVisible: true }; // double click should probably isolate the mesh
     default:
       throw new Error();
   }
@@ -132,8 +140,12 @@ const containerReducer = (state: State, action: Action) => {
 
 /* Elm architecture: model (i.e state), view (i.e manifestation of the state), update (i.e actions dispatched by events to update state) */
 export const Container = (props: MeshProps): JSX.Element => {
-  const [state, dispatch] = React.useReducer(containerReducer, initalState);
-  console.log(state); 
+
+  
+  const globalDispatch = useDispatch()
+
+  const [state, localDispatch] = React.useReducer(ContainerReducer, initalState);
+  
   return (
     <mesh
       {...props}
@@ -157,12 +169,12 @@ export const Container = (props: MeshProps): JSX.Element => {
 
 
       /** Update */
-      onClick         = {(e: MouseEvent)    => { return dispatch({_tag: "onClick",        payload: e})  }}
-      onPointerOver   = {(e: PointerEvent)  => { return dispatch({_tag: "onPointerOver",  payload: e})  }}
-      onPointerOut    = {(e: PointerEvent)  => { return dispatch({_tag: "onPointerOut",   payload: e})  }}
-      onContextMenu   = {(e: MouseEvent)    => { return dispatch({_tag: "onContextMenu",  payload: e})  }}
-      onDoubleClick   = {(e: MouseEvent)    => { return dispatch({_tag: "onDoubleClick",  payload: e})  }}
-      onPointerUp     = {(e: PointerEvent)  => {}}
+      onClick         = {(e: MouseEvent)    => { return localDispatch({_tag: "onClick",        payload: e})  }}
+      onPointerOver   = {(e: PointerEvent)  => { return localDispatch({_tag: "onPointerOver",  payload: e})  }}
+      onPointerOut    = {(e: PointerEvent)  => { return localDispatch({_tag: "onPointerOut",   payload: e})  }}
+      onContextMenu   = {(e: MouseEvent)    => { return localDispatch({_tag: "onContextMenu",  payload: e})  }}
+      onDoubleClick   = {(e: MouseEvent)    => { globalDispatch(bringContainerIntoFocus({id: state.containerID, visible: true}))  }}
+      onPointerUp     = {(e: PointerEvent)  => {  }}
       onPointerDown   = {(e: PointerEvent)  => {}}
       onPointerMove   = {(e: PointerEvent)  => {}}
       onPointerMissed = {(e: React.MouseEvent) => {}}

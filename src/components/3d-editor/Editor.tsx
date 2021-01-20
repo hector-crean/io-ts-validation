@@ -1,7 +1,7 @@
 
 import React, { useRef, VFC, Suspense } from 'react';
 import { useThree, extend, ReactThreeFiber, useFrame, Canvas } from 'react-three-fiber';
-import {OrbitControls, Html, Loader } from '@react-three/drei';
+import {OrbitControls, Html, Loader, useContextBridge } from '@react-three/drei';
 import { Light } from './Light'; 
 import { Perf } from 'r3f-perf';
 import * as THREE from 'three'; 
@@ -14,6 +14,9 @@ import { Container } from './Container/Container'
 import Icon from '@material-ui/core/Icon';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import { Object3D, Vector3 } from 'three';
+
+import { ReactReduxContext } from 'react-redux';
+
 
 {/* <Icon>
   <FullscreenIcon/>
@@ -158,7 +161,7 @@ const EditorScene = () => {
           {/*******************/}
       </Suspense>
 
-      {/* <OrbitControls 
+      <OrbitControls 
         //Get ref from the store?
         ref={orbitControlsRef} 
         enablePan={true} 
@@ -173,7 +176,7 @@ const EditorScene = () => {
         enabled
         minDistance={5}
         maxDistance={100}
-      />    */}
+      />   
       {/* <Controls/> */}
       {/* <Dolly /> */}
       <Perf />
@@ -191,12 +194,15 @@ const EditorScene = () => {
 const Editor: VFC = () => {
 
  
-  
+  // contect bridge needed as workaround due to: https://github.com/pmndrs/react-three-fiber/issues/43
+  const ContextBridge = useContextBridge(ReactReduxContext)
 
   
   return (
     <div id="three">
     <ClippingSlider />
+
+
 
     <Canvas
           colorManagement
@@ -206,11 +212,13 @@ const Editor: VFC = () => {
           gl={{ antialias: true }}
 
     >
+      <ContextBridge>
+
 
         <EditorScene />
 
        
-
+      </ContextBridge>
 
     </Canvas>
 
