@@ -30,6 +30,7 @@
     "axios": "^0.21.1",
     "fp-ts": "^2.9.3",
     "graphql": "^15.4.0",
+    "graphql.macro": "^1.4.2",
     "io-ts": "^2.2.13",
     "io-ts-extra": "^0.11.4",
     "io-ts-types": "^0.5.12",
@@ -53,7 +54,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "generate:airtable_types": "graphql-codegen --config codegen.yml"
   },
   "eslintConfig": {
     "extends": [
@@ -74,6 +76,14 @@
     ]
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "1.20.0",
+    "@graphql-codegen/fragment-matcher": "2.0.1",
+    "@graphql-codegen/introspection": "1.18.1",
+    "@graphql-codegen/typescript": "1.20.0",
+    "@graphql-codegen/typescript-document-nodes": "1.17.9",
+    "@graphql-codegen/typescript-graphql-files-modules": "1.18.1",
+    "@graphql-codegen/typescript-operations": "1.17.13",
+    "@graphql-codegen/typescript-react-apollo": "2.2.1",
     "babel-plugin-glsl": "^1.0.0",
     "glslify": "^7.1.1",
     "r3f-perf": "^0.77.0"

@@ -1,0 +1,21 @@
+query GetSubassembly($subassemblyName: String!) {
+  subassemblies(subassemblyName: $subassemblyName) {
+    subassemblyAssemblyTimeInDays
+    subassemblyBuildingSystem
+    subassemblyDesigner
+    subassemblyId
+    subassemblyLocationClass
+    subassemblyName
+    subassemblyPitchedAngle1
+    subassemblyPitchedAngle2
+    subassemblyPrimaryMaterial
+    subassemblyRoofPitchType
+    subassemblySpansNStories
+    subassemblyThickness
+    subassemblyUnitCost
+    subassemblyXDimension
+    subassemblyYDimension
+    subassemblyZDimension
+  }
+}
+

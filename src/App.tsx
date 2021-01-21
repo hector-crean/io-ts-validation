@@ -22,14 +22,20 @@ interface AppProps {
 
 const App = ({}: AppProps) => {
 
+
+
+  
+
  return (
 <Router>
     
-    
-   
   <Switch>
+     {/* A <Switch> looks through its children <Route>s and
+            renders the first one that matches the current URL. */}
+            
+      <Route path="/infocus" component={ComponentInFocus} /> 
+
       <Route path="/" component={Editor} /> 
-      <Route path="/in-focus" component={ComponentInFocus} /> 
 
   </Switch>        
   

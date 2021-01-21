@@ -15,8 +15,11 @@ import Icon from '@material-ui/core/Icon';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import { Object3D, Vector3 } from 'three';
 
+// Redux Context
 import { ReactReduxContext } from 'react-redux';
 
+// SceneGraph Object
+import { SceneGraph } from './SceneGraph'
 
 {/* <Icon>
   <FullscreenIcon/>
@@ -145,6 +148,7 @@ const EditorScene = () => {
           {/** PUT MODELS HERE  */}
           
           <Container/>
+          <SceneGraph/>
           
 
 

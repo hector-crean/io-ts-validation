@@ -6,10 +6,19 @@ import { a } from '@react-spring/web'
 import Overlay from './Overlay'
 import Scene from './Scene'
 
+import { GetSubassemblyQuery, GetSubassemblyQueryVariables } from '../../generated/graphql'; 
+import { useQuery  } from '@apollo/client'
+import { loader } from 'graphql.macro';
+const GetSubassembly_graphql = loader('src/queries/GetSubassembly.graphql');
 
-interface GreetingPageProps {}
 
-const GreetingPage = (props: GreetingPageProps) => {
+interface ComponentInFocusProps {}
+
+const ComponentInFocus = (props: ComponentInFocusProps) => {
+
+  const { data, loading, error }= useQuery<GetSubassemblyQuery, GetSubassemblyQueryVariables>( GetSubassembly_graphql, { variables: { subassemblyName: "Module-A1_01"} });
+
+  console.log("data", data); 
 
 
     // This spring controls the background and the svg fill (text color)
@@ -35,4 +44,4 @@ const GreetingPage = (props: GreetingPageProps) => {
   )
 }
 
-export default GreetingPage
+export default ComponentInFocus

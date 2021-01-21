@@ -4,8 +4,14 @@ import React from 'react';
 import { useDispatch } from 'react-redux'; 
 // Global update Actions: 
 import {  upsertSubassembly } from '../../store/Shared/action'; 
+// Query API
+import { runQuery } from '../../API/graphqlAPI'; 
+
+import { ProjectArray} from '../../API/types/t';
 
 
+// Scene graph is to render the state of the global scene graph. The individual scene graph components will have some local state to do with
+// ui that does not need to be shared, but all crucial info must be kept global
 
 
 // Local or global state for scene graph ? -> has to live in the global state... 
@@ -13,36 +19,44 @@ import {  upsertSubassembly } from '../../store/Shared/action';
 
 
 // IF WANT LOCAL STATE: USE THE COMMENTED OUT BELOW TO DEFINE A LOCAL REDUCER
-// interface SceneGraphState {
+interface SceneGraphState {
 
-// } 
-// const initialSceneGraphState: SceneGraphState = {
+} 
+const initialSceneGraphState: SceneGraphState = {
  
-// } 
+} 
   
-// type Action =
-//   | { _tag: "addContainer";        payload: {}    }
+type Action =
+  | { _tag: "addContainer";        payload: {}    }
 
 
-// const SceneGraphReducer = (state: SceneGraphState, action: Action) => {
-//   switch (action._tag) {
-//     case "addContainer":
-//       return {...state};
-//     default:
-//       throw new Error();
-//   }
-// }
+const SceneGraphReducer = (state: SceneGraphState, action: Action) => {
+  switch (action._tag) {
+    case "addContainer":
+      const globalDispatch = useDispatch()
+      // do query, then push updated scene graph to global store
+      //globalDispatch(upsertSubassembly()) 
+
+
+      return {...state};
+    default:
+      throw new Error();
+  }
+}
 
 
 /* Elm architecture: model (i.e state), view (i.e manifestation of the state), update (i.e actions dispatched by events to update state) */
 export const SceneGraph = (props: any): JSX.Element => {
 
-  
+  const [state, localDispatch] = React.useReducer(SceneGraphReducer, initialSceneGraphState);
   const globalDispatch = useDispatch()
 
-//   const [state, localDispatch] = React.useReducer(SceneGraphReducer, initialSceneGraphState);
 
-    globalDispatch(bringContainerIntoFocus({id: state.containerID, visible: true}))*  
+  
+
+  // Query our airtable database: then update our global state: 
+
+  // globalDispatch(upsertSubassembly()) 
 
   return (
     <group

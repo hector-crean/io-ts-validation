@@ -1,32 +1,23 @@
-import { ApolloError, ApolloQueryResult, ApolloClient, gql, DocumentNode} from '@apollo/client'; 
-
-
-
-
-export const GET_PROJECT = (id: string) => gql`query {
-  projects(id: ${id}) {
-    id
+query GetProject($projectId: String!) {
+  projects(projectId: $projectId) {
+    projectOwner {
+      ownerId
+      ownerName
+      ownerTasteProfile {
+        desireColour
+        desireColourMeta
+        ownerId
+      }
+    }
     projectProperty {
-      id
       propertyAddress
       propertyBoundary
-      propertyBuilding2
-      propertyBuilding3
-      propertyDescription
-      propertyId
-      propertyName
-      propertyNorthing
-      propertyType
-      propertyUprn
       propertyBuilding1 {
-        buildingFoundationType
-        buildingName
-        buildingNumberBathrooms
-        id
         buildingEnergyPerformance {
           energyAirflowExchange
-          energyFloorUValue
           energyDoorUValue
+          energyFloorUValue
+          energyId
           energyMeanTemperatureExternal
           energyRoofUValue
           energyRooflightUValue
@@ -39,29 +30,32 @@ export const GET_PROJECT = (id: string) => gql`query {
           energyWallUValue
           energyWaterHeatingType
           energyWindowUValue
-          id
         }
+        buildingFoundationType
+        buildingId
+        buildingName
+        buildingNumberBathrooms
         buildingPattern {
-          id
           patternBarcode
           patternDesigner {
+            designerId
             designerName
-            id
+            designerPhoto
           }
           patternJsonSchema
+          patternId
           patternRating
         }
       }
-    }
-    projectOwner {
-      id
-      ownerName
-      ownerTasteProfile {
-        desireColour
-        desireColourMeta
-        id
-      }
+      propertyBuilding2
+      propertyBuilding3
+      propertyDescription
+      propertyId
+      propertyName
+      propertyNorthing
+      propertyType
+      propertyUprn
     }
   }
 }
-`
+

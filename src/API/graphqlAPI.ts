@@ -20,8 +20,7 @@ import * as t from 'io-ts'
 import { Users, Answer } from './types/static-types'; 
 import { users, answer } from './types/iots-types'; 
 
-import { Project } from '../store/Shared/types/static-types'; 
-import { Project as projectCodec } from '../store/Shared/types/composite-types'
+import { ProjectArray as projectArrayCodec } from './types/t'; 
 import { client } from '../client';
 
 const query = gql`query MyQuery {
@@ -174,6 +173,7 @@ const query2 = gql`query MyQuery {
 `
 
 
+
 //Convert our api call to a TaskEither
 const graphqlGet = (
   client: ApolloClient<NormalizedCacheObject>, 
@@ -199,7 +199,7 @@ export const graphqlGetEither = <A>(
 ) => pipe(
   graphqlGet(client, query),
   TE.map(x => x.data),
-  TE.chain(decodeWith(codec))
+  // TE.chain(decodeWith(codec))
 );
 
 
@@ -207,17 +207,30 @@ export const graphqlGetEither = <A>(
 //   TE.right({ans: 42}),
 //   TE.chain(decodeWith(answer))
 // )
+export const exampleQuery = graphqlGetEither(client, query2, projectArrayCodec)
 
 
-export const runProgram = pipe(
+const onRunQueryLeft = (e: Error): T.Task<unknown> => {
+  return T.of(e.message)
+}
+const onRunQueryRight = (a: [any]): T.Task<unknown> => {
+  return T.of(a)
+}
+export const runQuery = pipe(
   sequenceT(TE.taskEither)(
-    graphqlGetEither(client, query2, projectCodec)
+    graphqlGetEither(client, query2, projectArrayCodec)
   ),
   TE.fold(
-    (errors) => T.of(errors.message),
-    (project1) => T.of(`\nThe answer was ${project1} for all of you`),
-  )
+    onRunQueryLeft,
+    onRunQueryRight,
+  ),
 )();
+
+
+
+
+
+
 
 // runProgram.then(console.log)
 
@@ -234,3 +247,11 @@ export const runProgram = pipe(
   )
 )();
 */
+
+
+
+// const tryCatch = <L, R>(f: () => Promise<R>): Observable<Either<L, R>> =>
+//   defer(f).pipe(
+//     map((r) => right<L, R>(r)),
+//     catchError((l) => of(left<L, R>(l)))
+//   );
