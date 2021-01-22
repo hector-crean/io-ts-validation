@@ -1,6 +1,7 @@
-@import url('https://rsms.me/inter/inter.css');
+@import './mixins';
+@import './overrides'; 
 
-.greeting-page {
+.component-in-focus-page {
 
     main {
         width: 100%;

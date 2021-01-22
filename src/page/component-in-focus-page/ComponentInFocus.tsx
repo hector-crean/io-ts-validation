@@ -24,7 +24,7 @@ const ComponentInFocus = (props: ComponentInFocusProps) => {
     // This spring controls the background and the svg fill (text color)
   const [{ background, fill }, set] = useSpring({ background: '#f0f0f0', fill: '#202020' }, [])
   return (
-    <div className = 'component-in-focus'>
+    <div className = 'component-in-focus-page'>
     <a.main style={{ background }}>
         <Canvas className="component-in-focus canvas" pixelRatio={[1, 2]}>
           <Suspense

@@ -1,6 +1,6 @@
 import { IBuildingComponent } from '../../types/componentTypes'; 
 import { match } from 'io-ts-extra'; 
-import { SkylarkModule } from '../../MetaData/skylarkComponentData'; 
+import { SkylarkModule } from '../../meta-data/skylarkComponentData'; 
 import * as Models from '../../Models/Skylark/Atoms2/N'
 
 

@@ -12,12 +12,12 @@ import * as D from 'io-ts/Decoder'
 import * as G from 'io-ts/Guard'
 import * as M from 'fp-ts/Monoid'; 
 import * as R from 'fp-ts/Record'
-import { Matrix4Tuple } from './Matrix4' 
+import { Matrix4Tuple } from './Matrix4';  
 import { v4 as uuidv4 } from 'uuid';
 
 // MetaData
-import { SwiftModule } from '../MetaData/swiftComponentData'
-import { SkylarkModule } from '../MetaData/skylarkComponentData'
+import { SwiftModule } from '../meta-data/swiftComponentData'
+import { SkylarkModule } from '../meta-data/skylarkComponentData'
 
 
 ///////////////

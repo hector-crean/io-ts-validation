@@ -4,7 +4,7 @@ import { Mesh } from 'three';
 import * as THREE from 'three'; 
 import { Html, HtmlProps} from '@react-three/drei'; 
 
-import { IContainer, makeContainer, IFaces, } from '../../../Graph'
+import { IContainer, makeContainer, IFaces, } from '../../../graph'
 import { meshBounds } from "@react-three/drei";
 
 import { useSpring, animated } from 'react-spring'; 

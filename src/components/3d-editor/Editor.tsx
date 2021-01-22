@@ -204,9 +204,8 @@ const Editor: VFC = () => {
 
   
   return (
-    <div id="three">
-    <ClippingSlider />
-
+  <>
+    {/* <ClippingSlider /> */}
 
 
     <Canvas
@@ -215,7 +214,6 @@ const Editor: VFC = () => {
           camera={{ fov: 45, position: [8, 12, 14] }}
           pixelRatio={window.devicePixelRatio}
           gl={{ antialias: true }}
-
     >
       <ContextBridge>
 
@@ -226,6 +224,7 @@ const Editor: VFC = () => {
       </ContextBridge>
 
     </Canvas>
+   
 
 
     {/* <a href="https://www.opensystemslab.io/" className="top-left">
@@ -235,8 +234,8 @@ const Editor: VFC = () => {
       More Information
     </a> */}
 
+  </>
 
-    </div>  
   );
 };
 

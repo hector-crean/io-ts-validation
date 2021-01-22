@@ -1,0 +1,46 @@
+@mixin chart-background-black() {
+    background-color: $ui-05;
+  }
+
+
+// @mixin #{$prefix}--#{$charts-prefix}--grid{
+//     rect.chart-grid-backdrop {
+//         @if $carbon--theme == $carbon--theme--g10 {
+//             fill: $ui-01;
+//         } @else if $carbon--theme == $carbon--theme--g90 {
+//             fill: $carbon--gray-100;
+//         } @else {
+//             fill: $ui-background;
+//         }
+//     }
+//     rect.chart-grid-backdrop.stroked {
+//         stroke: $ui-03;
+//     }
+
+//     g.x.grid g.tick,
+//     g.y.grid g.tick {
+//         line {
+//             pointer-events: none;
+//             stroke-width: 1px;
+//             stroke: $ui-03;
+//         }
+
+//         &.active line {
+//             stroke-dasharray: 2px;
+//             stroke: $focus;
+//         }
+//     }
+// }
+
+// .#{$prefix}--chart-holder {
+// 	position: relative;
+// 	display: block;
+// 	width: 100%;
+// 	height: 100%;
+// 	background-color: $ui-background;
+
+// 	.DONT_STYLE_ME_css_styles_verifier {
+// 		overflow: hidden;
+// 		opacity: 0;
+// 	}
+// }

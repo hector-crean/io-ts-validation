@@ -45,6 +45,24 @@ query GetProject($projectId: String!) {
           patternJsonSchema
           patternId
           patternRating
+          patternSubassembliesUsed {
+            subassemblyAssemblyTimeInDays
+            subassemblyBuildingSystem
+            subassemblyDesigner
+            subassemblyId
+            subassemblyLocationClass
+            subassemblyName
+            subassemblyPitchedAngle1
+            subassemblyPitchedAngle2
+            subassemblyPrimaryMaterial
+            subassemblyRoofPitchType
+            subassemblySpansNStories
+            subassemblyThickness
+            subassemblyUnitCost
+            subassemblyXDimension
+            subassemblyYDimension
+            subassemblyZDimension
+          }
         }
       }
       propertyBuilding2

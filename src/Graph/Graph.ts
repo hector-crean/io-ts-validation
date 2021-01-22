@@ -5,12 +5,8 @@ import * as A from 'fp-ts/Array';
 import * as O from 'fp-ts/Option'; 
 import * as _Map from 'fp-ts/Map'; 
 import * as _Set from 'fp-ts/Set'; 
-import { assoc, prop } from './utility'; 
 import * as L from 'monocle-ts'; 
 import { getLenses } from 'io-ts-types'; 
-import * as t from 'io-ts/Type'; 
-import { IBuildingComponent } from './Component'; 
-import { swiftComponentLibrary, swiftComponentRecord } from '../MetaData/swiftComponentData'; 
 import { IVertex, IVertexData, makeVertex} from './Vertex'
 import { IEdge, IEdgeData, makeEdge } from './Edge'
 

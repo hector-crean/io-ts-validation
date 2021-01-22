@@ -289,6 +289,17 @@ export type TasteProfiles = {
   owner?: Maybe<Array<Maybe<Owner>>>;
 };
 
+export type GetAllSubassembliesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllSubassembliesQuery = (
+  { __typename?: 'Query' }
+  & { subassemblies?: Maybe<Array<Maybe<(
+    { __typename?: 'subassemblies' }
+    & Pick<Subassemblies, 'id' | 'subassemblyAssemblyTimeInDays' | 'subassemblyBuildingSystem' | 'subassemblyDesigner' | 'subassemblyLocationClass' | 'subassemblyName' | 'subassemblyPitchedAngle1' | 'subassemblyPitchedAngle2' | 'subassemblyRoofPitchType' | 'subassemblyPrimaryMaterial' | 'subassemblySpansNStories' | 'subassemblyThickness' | 'subassemblyUnitCost' | 'subassemblyXDimension' | 'subassemblyYDimension' | 'subassemblyZDimension'>
+  )>>> }
+);
+
 export type GetProjectQueryVariables = Exact<{
   projectId: Scalars['String'];
 }>;
@@ -320,6 +331,9 @@ export type GetProjectQuery = (
           & { patternDesigner?: Maybe<Array<Maybe<(
             { __typename?: 'designers' }
             & Pick<Designers, 'designerId' | 'designerName' | 'designerPhoto'>
+          )>>>, patternSubassembliesUsed?: Maybe<Array<Maybe<(
+            { __typename?: 'subassemblies' }
+            & Pick<Subassemblies, 'subassemblyAssemblyTimeInDays' | 'subassemblyBuildingSystem' | 'subassemblyDesigner' | 'subassemblyId' | 'subassemblyLocationClass' | 'subassemblyName' | 'subassemblyPitchedAngle1' | 'subassemblyPitchedAngle2' | 'subassemblyPrimaryMaterial' | 'subassemblyRoofPitchType' | 'subassemblySpansNStories' | 'subassemblyThickness' | 'subassemblyUnitCost' | 'subassemblyXDimension' | 'subassemblyYDimension' | 'subassemblyZDimension'>
           )>>> }
         )>>> }
       )>>> }
@@ -341,6 +355,53 @@ export type GetSubassemblyQuery = (
 );
 
 
+export const GetAllSubassembliesDocument = gql`
+    query GetAllSubassemblies {
+  subassemblies {
+    id
+    subassemblyAssemblyTimeInDays
+    subassemblyBuildingSystem
+    subassemblyDesigner
+    subassemblyLocationClass
+    subassemblyName
+    subassemblyPitchedAngle1
+    subassemblyPitchedAngle2
+    subassemblyRoofPitchType
+    subassemblyPrimaryMaterial
+    subassemblySpansNStories
+    subassemblyThickness
+    subassemblyUnitCost
+    subassemblyXDimension
+    subassemblyYDimension
+    subassemblyZDimension
+  }
+}
+    `;
+
+/**
+ * __useGetAllSubassembliesQuery__
+ *
+ * To run a query within a React component, call `useGetAllSubassembliesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllSubassembliesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllSubassembliesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllSubassembliesQuery(baseOptions?: Apollo.QueryHookOptions<GetAllSubassembliesQuery, GetAllSubassembliesQueryVariables>) {
+        return Apollo.useQuery<GetAllSubassembliesQuery, GetAllSubassembliesQueryVariables>(GetAllSubassembliesDocument, baseOptions);
+      }
+export function useGetAllSubassembliesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllSubassembliesQuery, GetAllSubassembliesQueryVariables>) {
+          return Apollo.useLazyQuery<GetAllSubassembliesQuery, GetAllSubassembliesQueryVariables>(GetAllSubassembliesDocument, baseOptions);
+        }
+export type GetAllSubassembliesQueryHookResult = ReturnType<typeof useGetAllSubassembliesQuery>;
+export type GetAllSubassembliesLazyQueryHookResult = ReturnType<typeof useGetAllSubassembliesLazyQuery>;
+export type GetAllSubassembliesQueryResult = Apollo.QueryResult<GetAllSubassembliesQuery, GetAllSubassembliesQueryVariables>;
 export const GetProjectDocument = gql`
     query GetProject($projectId: String!) {
   projects(projectId: $projectId) {
@@ -389,6 +450,24 @@ export const GetProjectDocument = gql`
           patternJsonSchema
           patternId
           patternRating
+          patternSubassembliesUsed {
+            subassemblyAssemblyTimeInDays
+            subassemblyBuildingSystem
+            subassemblyDesigner
+            subassemblyId
+            subassemblyLocationClass
+            subassemblyName
+            subassemblyPitchedAngle1
+            subassemblyPitchedAngle2
+            subassemblyPrimaryMaterial
+            subassemblyRoofPitchType
+            subassemblySpansNStories
+            subassemblyThickness
+            subassemblyUnitCost
+            subassemblyXDimension
+            subassemblyYDimension
+            subassemblyZDimension
+          }
         }
       }
       propertyBuilding2

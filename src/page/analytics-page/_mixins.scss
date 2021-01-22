@@ -1,0 +1,20 @@
+/*
+ Per the design we need to use Gray 10/Black for our banner background color, which can be set with the $ui-01 color token. 
+ Also, we want the background to extend into the grid’s outermost gutters to go the full width of the viewport, so given the DOM structure, 
+ we can achieve that by setting the background in an absolutely positioned pseudo element.
+*/
+
+@mixin analytics-page-background() {
+    background-color: $ui-01;
+    position: relative;
+    &::before {
+      content: '';
+      position: absolute;
+      left: -$spacing-06;
+      top: 0;
+      right: -$spacing-06;
+      bottom: 0;
+      background: $ui-01;
+      z-index: -1;
+    }
+  }
