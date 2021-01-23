@@ -9,7 +9,7 @@ import { useGLTF } from '@react-three/drei/useGLTF'
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
 import { useHover } from '../modelUtils'; 
 
-type GLTFResult = GLTF & {
+export type GLTFResult = GLTF & {
   nodes: {
     ['A-3_1']: THREE.Mesh
     ['A-3_2']: THREE.Mesh

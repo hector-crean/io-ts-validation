@@ -8,7 +8,7 @@ import { useGLTF } from '@react-three/drei/useGLTF'
 
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
 
-type GLTFResult = GLTF & {
+export type GLTFResult = GLTF & {
   nodes: {
     mesh0_meshnode_0: THREE.Mesh
     mesh1_meshnode_1: THREE.Mesh
@@ -1956,7 +1956,7 @@ type GLTFResult = GLTF & {
   }
 }
 
-export default function Model(props: JSX.IntrinsicElements['group']) {
+export default function Model(props: JSX.IntrinsicElements['group']){
   const group = useRef<THREE.Group>()
   const { nodes, materials } = useGLTF('/BLK-A.gltf') as GLTFResult
   return (

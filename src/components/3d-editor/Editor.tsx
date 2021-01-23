@@ -1,14 +1,14 @@
 
 import React, { useRef, VFC, Suspense } from 'react';
 import { useThree, extend, ReactThreeFiber, useFrame, Canvas } from 'react-three-fiber';
-import {OrbitControls, Html, Loader, useContextBridge } from '@react-three/drei';
+import {OrbitControls, Html, Loader, useContextBridge, Environment, ContactShadows } from '@react-three/drei';
 import { Light } from './Light'; 
 import { Perf } from 'r3f-perf';
 import * as THREE from 'three'; 
 import ClippingSlider from './ClippingSlider/ClippingSlider'; 
 import { useSpring } from 'react-spring'; 
 //Models
-import { Container } from './Container/Container'
+import { ContainerMesh } from './Container/MeshContainer'
 
 // Icons
 import Icon from '@material-ui/core/Icon';
@@ -20,6 +20,9 @@ import { ReactReduxContext } from 'react-redux';
 
 // SceneGraph Object
 import { SceneGraph } from './SceneGraph'
+import { truncateSync } from 'fs';
+
+import { ContainerGroupMesh } from './Container/MeshGroupContainer'; 
 
 {/* <Icon>
   <FullscreenIcon/>
@@ -123,9 +126,27 @@ const EditorScene = () => {
 
   return (
     <>
+    {/**Sets up a global cubemap, which affects scene.environment, and optionally scene.background. A selection of presets from 
+     * HDRI Haven are available for convenience. */}
+     {/* <Environment preset="warehouse" /> */}
+      
+      {/* <ContactShadows
+          rotation={[Math.PI / 2, 0, 0]}
+          position={[0, -1.6, 0]}
+          width={15}
+          height={15}
+          blur={2.5}
+          far={1.6}
+        /> */}
+
+        
     
       <Light/>
-      <mesh name="ground" rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+      {/* <mesh 
+        name="ground" 
+        rotation={[-Math.PI / 2, 0, 0]} 
+        receiveShadow={true}
+      >
           <planeBufferGeometry attach="geometry" args={[50, 50, 1, 1]} />
           <shadowMaterial
             attach="material"
@@ -134,7 +155,8 @@ const EditorScene = () => {
             side={THREE.DoubleSide}
           />
           <meshBasicMaterial color="gray" side={THREE.DoubleSide} attach="material" />
-        </mesh>  
+          
+      </mesh>   */}
           
        
        
@@ -146,10 +168,10 @@ const EditorScene = () => {
           </Html>
         }>
           {/** PUT MODELS HERE  */}
-          
-          <Container/>
-          <SceneGraph/>
-          
+          {/** Create a coordinate system for grid. Place the containers/voxels into grid with given rotations  */}
+          <ContainerMesh position={[0,1,0]}/>
+          {/* <SceneGraph/> */}
+          {/* <ContainerGroupMesh/> */}
 
 
 

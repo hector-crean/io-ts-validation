@@ -9,6 +9,13 @@ import { runQuery } from '../../API/graphqlAPI';
 
 import { ProjectArray} from '../../API/types/t';
 
+// import { renderComponentNodes } from './SkylarkBuilding'; 
+// import { createGraph_Astr } from '../../pattern-book/skylarkPatterns'; 
+// import { SkylarkModule } from '../../meta-data/skylarkComponentData';  
+// const sceneGraph = createGraph_Astr(1, SkylarkModule.N_WALL_CST_06x24x025m, 0); 
+// const allcomp = renderComponentNodes(sceneGraph); 
+
+
 
 // Scene graph is to render the state of the global scene graph. The individual scene graph components will have some local state to do with
 // ui that does not need to be shared, but all crucial info must be kept global

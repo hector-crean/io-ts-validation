@@ -9,7 +9,6 @@ import { a } from '@react-spring/three'
 // Example mesh
 import { useGLTF } from '@react-three/drei/useGLTF'
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
-import { Vector2 } from 'three'
 
 // type GLTFResult = GLTF & ObjectMap
 type GLTFResult = GLTF & {
