@@ -5,31 +5,39 @@ import {OrbitControls, Html, Loader, useContextBridge, Environment, ContactShado
 import { Light } from './Light'; 
 import { Perf } from 'r3f-perf';
 import * as THREE from 'three'; 
-import ClippingSlider from './ClippingSlider/ClippingSlider'; 
-import { useSpring } from 'react-spring'; 
-//Models
-import { ContainerMesh } from './Container/MeshContainer'
+import { Vector3 } from 'three';
+import { useSpring, config, SpringValue } from '@react-spring/core'
+import { a } from '@react-spring/three'
+import { a as aDom } from '@react-spring/web'
+import { EffectComposer, SSAO, SMAA } from 'react-postprocessing'
 
-// Icons
-import Icon from '@material-ui/core/Icon';
-import FullscreenIcon from '@material-ui/icons/Fullscreen';
-import { Object3D, Vector3 } from 'three';
+
+import {useYScroll} from './Gestured/Scroll';
+import { ReactEventHandlers } from 'react-use-gesture/dist/types'
+
 
 // Redux Context
 import { ReactReduxContext } from 'react-redux';
 
 // SceneGraph Object
-import { SceneGraph } from './SceneGraph'
-import { truncateSync } from 'fs';
-
-import { ContainerGroupMesh } from './Container/MeshGroupContainer'; 
 
 import Dodecahedron from './Gestured/Draggable'; 
 
 
-{/* <Icon>
-  <FullscreenIcon/>
-</Icon> */}
+
+/**
+ * 
+ *  The showroom is to showcase the different building systems, and then the house texmplates within each building
+ *  system. 
+ * 
+ *  It involves first a vertical scroll, then a horizontal scroll. Once a template has been picked, we move on
+ *  to the editor component. 
+ * 
+ *  A similar page will be made when selecting individual components within a house type.  
+ * 
+ * 
+ * 
+ */
 
 
 /////
@@ -54,66 +62,21 @@ const Dolly = (targetObject: THREE.Object3D): void => {
 }
 
 
-// // alternate 
-// const Controls = (targetObject: Object3D) => {
-//   const { gl, camera } = useThree()
-  
-  
-
-//   const [props, set ] 
-//   = useSpring<{
-//     from: {x: number, y: number, z: number};
-//     to: { x: number, y: number, z: number };
-//     onFrame: (...args: any) => void;
-//     reverse: boolean;
-//     onRest: (...args: any) => void;
-//   }>(
-//     () => (
-//       {
-//         from: {x: camera.position.x, y: camera.position.y, z: camera.position.z}, 
-//         to: {x: targetObject.position.x, y: targetObject.position.y, z: targetObject.position.z},
-//         onFrame: ({to}: {to : {x: number, y: number, z: number}}) => { 
-//           camera.position.x = to.x; 
-//           camera.position.y = to.y; 
-//           camera.position.z = to.z; 
-//         },
-//         reverse: false,
-//         onRest: () => {}
-//       }
-//     )
-//   )
-
-
-//   useSpring<{
-//     from: unknown;
-//     z: unknown;
-//     onFrame: (...args:any) => void;
-//   }>({
-//     from: {
-//       z: 300
-//     },
-//     z: 2,
-//     onFrame: ({ z }) => {
-//       camera.position.z = z
-//     }
-//   })
-
-//   return <OrbitControls target={[0, 0, 0]} args={[camera, gl.domElement]} />
-// }
-
-
-
-
 //////////////////////////////////
 // Scene
 //////////////////////////////////
 
 
+interface ShowRoomSceneProps {
+  y: SpringValue<number>
+  bindFn: (...args: any[]) => ReactEventHandlers
+}
 
-const EditorScene = () => {
+const ShowroomScene = ({y, bindFn}: ShowRoomSceneProps) => {
 
   const orbitControlsRef = useRef<OrbitControls>();
   console.log(orbitControlsRef)
+
 
   const {
     camera,
@@ -143,27 +106,14 @@ const EditorScene = () => {
         /> */}
 
         
-    
       <Light/>
-      {/* <mesh 
-        name="ground" 
-        rotation={[-Math.PI / 2, 0, 0]} 
-        receiveShadow={true}
-      >
-          <planeBufferGeometry attach="geometry" args={[50, 50, 1, 1]} />
-          <shadowMaterial
-            attach="material"
-            color={0}
-            opacity={0.9}
-            side={THREE.DoubleSide}
-          />
-          <meshBasicMaterial color="gray" side={THREE.DoubleSide} attach="material" />
+
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -10, 0]}>
+          <planeGeometry args={[4, 1000]} />
+          <meshBasicMaterial color="lightcoral" fog={false} transparent opacity={0.4} />
+        </mesh>
+     
           
-      </mesh>   */}
-          
-       
-       
-          <Dodecahedron/>
 
       <Suspense
         fallback={
@@ -173,26 +123,34 @@ const EditorScene = () => {
         }>
           {/** PUT MODELS HERE  */}
           {/** Create a coordinate system for grid. Place the containers/voxels into grid with given rotations  */}
-          {/* <ContainerMesh position={[0,1,0]}/> */}
-          {/* <SceneGraph/> */}
-          {/* <ContainerGroupMesh/> */}
+          <a.group position-z={y.to((y) => (y / 500) * 25)}>
+           
+            <a.mesh castShadow>
+              <dodecahedronBufferGeometry attach="geometry" args={[1.4, 0]} />
+              <meshNormalMaterial attach="material" />
+            </a.mesh>
 
-
-
-
-
-
-
-
-
-
-
+          </a.group>
 
 
           {/*******************/}
+          <EffectComposer multisampling={0}>
+            <SSAO
+              intensity={40}
+              luminanceInfluence={0.2}
+              radius={8}
+              scale={0.5}
+              bias={0.5}
+              distanceThreshold={0.5}
+              distanceFalloff={0.03}
+              rangeFalloff={0.001}
+            />
+            <SMAA />
+          </EffectComposer>
+
       </Suspense>
 
-      <OrbitControls 
+      {/* <OrbitControls 
         //Get ref from the store?
         ref={orbitControlsRef} 
         enablePan={true} 
@@ -207,10 +165,11 @@ const EditorScene = () => {
         enabled
         minDistance={5}
         maxDistance={100}
-      />   
+      />    */}
       {/* <Controls/> */}
       {/* <Dolly /> */}
-      <Perf />
+
+      {/* <Perf /> */}
 
     </>
   );
@@ -222,34 +181,47 @@ const EditorScene = () => {
 //////////////////////////////////
 
 
-const Editor: VFC = () => {
+const Showroom: VFC = () => {
 
  
   // contect bridge needed as workaround due to: https://github.com/pmndrs/react-three-fiber/issues/43
   const ContextBridge = useContextBridge(ReactReduxContext)
 
-  
+  const [y, bind] = useYScroll({bottom: -100, top: 2400}, { domTarget: window })
+ 
+
+
+
   return (
   <>
     {/* <ClippingSlider /> */}
 
-
     <Canvas
-          colorManagement
-          shadowMap={{ enabled: true, type: THREE.PCFSoftShadowMap }}
-          camera={{ fov: 45, position: [8, 12, 14] }}
-          pixelRatio={window.devicePixelRatio}
-          gl={{ antialias: true }}
+      concurrent 
+      invalidateFrameloop 
+      colorManagement
+      shadowMap={{ enabled: true, type: THREE.PCFSoftShadowMap }}
+      pixelRatio={window.devicePixelRatio}
+      gl={{ antialias: true, alpha: false }}
+      camera={{ position: [0, 5, 10], fov: 65, near: 2, far: 60 }}
     >
-      <ContextBridge>
+        <ContextBridge>
 
 
-        <EditorScene />
+        <ShowroomScene 
+          y={y} 
+          bindFn={bind}
+        />
 
        
-      </ContextBridge>
+        </ContextBridge>
 
     </Canvas>
+
+
+    {/** --- Bar at the side for scroll position  */}
+    <aDom.div className="bar" style={{ height: y.to([-100, 2400], ['0%', '100%']) }} />
+
    
 
 
@@ -265,4 +237,4 @@ const Editor: VFC = () => {
   );
 };
 
-export default Editor;
+export default Showroom;

@@ -10,7 +10,7 @@ import MaterialHeader from './components/header/material-header/MaterialHeader';
 import Builder3DPage from './page/builder3D-page/Builder3DPage'; 
 import ComponentInFocusPage from './page/component-in-focus-page/ComponentInFocus'; 
 import AnalyticsPage from './page/analytics-page/AnalyticsPage'; 
-
+import ShowroomPage from './page/showroom-page/ShowroomPage'; 
 
 //Global state: setup scene graph -> 
 
@@ -40,6 +40,9 @@ const App = ({}: AppProps) => {
       <Route path="/infocus" component={ComponentInFocusPage} /> 
 
       <Route path='/analytics' component={AnalyticsPage} />
+
+      <Route path='/choose-building-system' component={ShowroomPage}/>
+
 
       <Route path="/" component={Builder3DPage} /> 
 
