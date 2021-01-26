@@ -16,8 +16,8 @@ import { Matrix4Tuple } from './Matrix4';
 import { v4 as uuidv4 } from 'uuid';
 
 // MetaData
-import { SwiftModule } from '../meta-data/swiftComponentData'
-import { SkylarkModule } from '../meta-data/skylarkComponentData'
+import { SwiftModule } from '../../meta-data/swiftComponentData'
+import { SkylarkModule } from '../../meta-data/skylarkComponentData'
 
 
 ///////////////

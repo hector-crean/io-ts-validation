@@ -1,7 +1,7 @@
 
 import * as F from 'fp-ts/function'; 
 import * as Eq from 'fp-ts/Eq'
-import { SwiftModule } from '../meta-data/swiftComponentData'
+import { SwiftModule } from '../../meta-data/swiftComponentData'
 import {componentBonds, tBondID, Bond, BondID } from './Bond'; 
 import { v4 as uuidv4 } from 'uuid';
 import { IVertex } from './Vertex'; 

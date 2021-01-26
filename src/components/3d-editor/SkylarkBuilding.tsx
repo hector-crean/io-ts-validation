@@ -2,10 +2,10 @@ import React, { Suspense } from 'react';
 import { Html, Loader } from '@react-three/drei'
 import { skyLarkComponentLibrary, SkylarkModule } from '../../meta-data/skylarkComponentData'; 
 import { IBuildingComponent } from '../../types/componentTypes'; 
-import { IGraph, getVertices} from '../../graph/Graph'; 
-import {  IVertex, IVertexData} from '../../graph/Vertex'; 
-import {IEdge, IEdgeData } from '../../graph/Edge'; 
-import { matchComponentState } from '../../graph/Component'; 
+import { IGraph, getVertices} from '../../lib/graph/Graph'; 
+import {  IVertex, IVertexData} from '../../lib/graph/Vertex'; 
+import {IEdge, IEdgeData } from '../../lib/graph/Edge'; 
+import { matchComponentState } from '../../lib/graph/Component'; 
 import { match } from 'io-ts-extra'; 
 import * as A from 'fp-ts/Array'; 
 import * as F from 'fp-ts/function'; 
@@ -16,8 +16,8 @@ import * as THREE from 'three';
 import { wallPatternBook } from '../../pattern-book/skylarkPatterns'; 
 import { Vector3 } from 'three';
 import { v4 as uuidv4 } from 'uuid';
-import { createMatrix4 } from '../../graph/Matrix4'; 
-import { matchContainerState, ContainerState, ContainerStateType } from '../../graph';
+import { createMatrix4 } from '../../lib/graph/Matrix4'; 
+import { matchContainerState, ContainerState, ContainerStateType } from '../../lib/graph';
 import { Box } from '../../Models/Box'; 
 import { useHover } from '../../Models/modelUtils'; 
 // We take the underlying model, and convert it into a view. 

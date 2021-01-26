@@ -3,7 +3,7 @@ import { useFrame, MouseEvent, PointerEvent, WheelEvent, MeshProps, EventHandler
 import { Geometry, Mesh } from 'three'; 
 import * as THREE from 'three'; 
 import { Html, HtmlProps, meshBounds, Loader} from '@react-three/drei'; 
-import { IContainer, makeContainer, IFaces, ContainerState, containerConstructors } from '../../../graph'
+import { IContainer, makeContainer, IFaces, ContainerState, containerConstructors } from '../../../lib/graph'
 import { useSpring, animated } from 'react-spring'; 
 // For the tooltip
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';

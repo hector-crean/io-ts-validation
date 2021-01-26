@@ -2,12 +2,12 @@ import {
     IVertex, IVertexData, containerConstructors, makeVertex,
     makeContainer, IEdge, IEdgeData, makeEdge, getVertices, makeGraph, logState,
     IGraph
-} from '../graph'; 
+} from '../lib/graph'; 
 import { v4 as uuidv4 } from 'uuid'; 
 import * as A from 'fp-ts/Array'; 
 import * as F from 'fp-ts/function'; 
 import { SkylarkModule, skyLarkComponentLibrary, skylarkComponentRecord} from '../meta-data/skylarkComponentData'; 
-import { Matrix4Tuple, createMatrix4, createMatix4Tuple} from '../graph/Matrix4'
+import { Matrix4Tuple, createMatrix4, createMatix4Tuple} from '../lib/graph/Matrix4'
 import { Matrix4 } from 'three'; 
 import { Box } from '../Models/Box'; 
 
