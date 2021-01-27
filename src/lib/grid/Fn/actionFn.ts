@@ -31,8 +31,6 @@ import { skylarkInitialStateActive , skylarkInitialStateInactive} from '../Data/
 
 
 // --- | Global cell states
-const globalCellStates = new Map<Coordinate, SkylarkCellState>(); 
-
 
 
 
@@ -62,7 +60,6 @@ const voidLenses = getLenses(Void)
 type ActionType_modify = 
 | {_tag: 'addFloors', payload: {additionalFloors: number}}
 | {_tag: 'removeFloors', payload: {removedFloors: number}}
-| {_tag: ''};
 
 const addFloorsAction = (n: number): ActionType_modify => {return {_tag: 'addFloors', payload: {additionalFloors: n}} }
 const removeFloorsAction = (n: number): ActionType_modify => {return {_tag: 'removeFloors', payload: {removedFloors: n}} }

@@ -57,7 +57,7 @@ const ShowroomPage = (): JSX.Element => {
         
             <span className="header"> H4.OE</span>
             <a href="https://github.com/hector-crean/io-ts-validation" className="top-left" children="Github" />
-            <a href="https://www.notion.so/Housing-4-0-Energy-e83e0e7f455a4a419463619a29c4cf51" className="tpp-right" children="Notion Page" />
+            {/* <a href="https://www.notion.so/Housing-4-0-Energy-e83e0e7f455a4a419463619a29c4cf51" className="tpp-right" children="Notion Page" /> */}
             <a href="https://www.opensystemslab.io/" className="bottom-left" children="+ Open Systems Lab " />
             {/* <a href="" className="bottom-right" children="" /> */}
 

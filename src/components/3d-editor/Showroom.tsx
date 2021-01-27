@@ -23,7 +23,7 @@ import { ReactReduxContext } from 'react-redux';
 
 import Dodecahedron from './Gestured/Draggable'; 
 
-
+import SkylarkBuilding from './Skylark_gltf_skylark'
 
 /**
  * 
@@ -73,9 +73,8 @@ interface ShowRoomSceneProps {
 }
 
 const ShowroomScene = ({y, bindFn}: ShowRoomSceneProps) => {
-
   const orbitControlsRef = useRef<OrbitControls>();
-  console.log(orbitControlsRef)
+ 
 
 
   const {
@@ -108,12 +107,13 @@ const ShowroomScene = ({y, bindFn}: ShowRoomSceneProps) => {
         
       <Light/>
 
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -10, 0]}>
-          <planeGeometry args={[4, 1000]} />
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
+          <planeGeometry args={[0.1, 1000]} />
           <meshBasicMaterial color="lightcoral" fog={false} transparent opacity={0.4} />
-        </mesh>
-     
-          
+      </mesh>
+
+
+      <Html>  <span className="header"> H4.OE – Skylark </span> </Html>
 
       <Suspense
         fallback={
@@ -125,10 +125,36 @@ const ShowroomScene = ({y, bindFn}: ShowRoomSceneProps) => {
           {/** Create a coordinate system for grid. Place the containers/voxels into grid with given rotations  */}
           <a.group position-z={y.to((y) => (y / 500) * 25)}>
            
-            <a.mesh castShadow>
+            {/* <a.mesh castShadow>
               <dodecahedronBufferGeometry attach="geometry" args={[1.4, 0]} />
               <meshNormalMaterial attach="material" />
-            </a.mesh>
+            </a.mesh> */}
+            <SkylarkBuilding 
+              scale={new THREE.Vector3(0.5,0.5,0.5)}
+              position={new THREE.Vector3(0, 0,  10)}
+            />
+
+            <SkylarkBuilding 
+              scale={new THREE.Vector3(0.5,0.5,0.5)}
+              position={new THREE.Vector3(0, 0,  0)}
+            />
+            <SkylarkBuilding 
+              scale={new THREE.Vector3(0.5,0.5,0.5)}
+              position={new THREE.Vector3(0, 0, -20)}
+
+            />
+
+            <SkylarkBuilding 
+              scale={new THREE.Vector3(0.5,0.5,0.5)}
+              position={new THREE.Vector3(0, 0, -40)}
+
+            />
+
+            <SkylarkBuilding 
+              scale={new THREE.Vector3(0.5,0.5,0.5)}
+              position={new THREE.Vector3(0, 0, -60)}
+
+            />
 
           </a.group>
 

@@ -2,6 +2,10 @@ import { Property, Owner, Project, Building, Subassembly, EnergyPerformance, Pat
 import * as t from 'io-ts'; 
 import { pipe } from 'fp-ts/pipeable'; 
 import * as E from 'fp-ts/Either'; 
+
+
+import { SkylarkCellState } from '../../../lib/grid/Data/CellState'; 
+import { } from '../../../lib/grid/Fn/actionFn'; 
 /**
  * Entities
  */
@@ -30,7 +34,8 @@ export type DashboardState = {
     energyPerformances: NormalizedObject<EnergyPerformance>,
     patterns: NormalizedObject<Pattern>,
     tasteProfiles: NormalizedObject<TasteProfile>,
-    designers: NormalizedObject<Designer>
+    designers: NormalizedObject<Designer>,
+
   }
 }
 

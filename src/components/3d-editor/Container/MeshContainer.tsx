@@ -1,5 +1,5 @@
 import React, { useRef, useState, useCallback, useEffect, Suspense } from "react"
-import { useFrame, MouseEvent, PointerEvent, WheelEvent, MeshProps, EventHandlers, GroupProps  } from "react-three-fiber"
+import { useFrame, MouseEvent, PointerEvent, WheelEvent, MeshProps, EventHandlers, GroupProps, ObjectMap  } from "react-three-fiber"
 import { Geometry, Mesh } from 'three'; 
 import * as THREE from 'three'; 
 import { Html, HtmlProps, meshBounds, Loader} from '@react-three/drei'; 
@@ -11,8 +11,30 @@ import Button from '@material-ui/core/Button';
 import Tooltip from '@material-ui/core/Tooltip';
 //Global State
 import { useDispatch } from 'react-redux'; 
-import { bringAllContainersIntoFocus, bringContainerIntoFocus } from '../../../store/Editor/actions'; 
+import { bringAllContainersIntoFocus, bringContainerIntoFocus } from '../../../store/Editor/action-constructors'; 
 import {  plywoodMaterial } from '../../../materials/plywoodMaterial'; 
+
+import R from 'fp-ts/Record'; 
+
+import { 
+  CellState,   
+  Point3, 
+  Building,
+  Storey,
+  EnvelopeSection, 
+  Room,
+  WallUnit, 
+  FloorUnit, 
+  RoofUnit,
+  Void,
+  Active, 
+  Inactive,
+  ActiveState
+} from '../../../store/Editor/types/CellState'; 
+import { getLenses } from '../../../lib/optics/getLenses'; 
+import { getPrism } from '../../../lib/optics/getPrism'; 
+
+import { Lens, lens } from 'monocle-ts'; 
 
 //LOAD GEOMETRY/MATERIALS
 
@@ -20,11 +42,13 @@ import {  plywoodMaterial } from '../../../materials/plywoodMaterial';
 import { useGLTF } from '@react-three/drei/useGLTF'
 import { GLTF  } from 'three/examples/jsm/loaders/GLTFLoader'
 
-import {GLTFResult} from '../../../Models/Swift/A3'
-useGLTF.preload('/Swift/A3.glb')
+import { GLTFTypeLookup, SwiftGLTF } from '../../../Models/Swift/GLTF-types'
 
 
-// type GLTFResult = GLTF & ObjectMap
+type GLTFResult = GLTF & ObjectMap
+
+
+
 
 
 
@@ -77,77 +101,241 @@ const ContainerTooltip = (): JSX.Element => {
 
 
 
-/// Container 
+type MeshState = {
+  meshGeometry?: THREE.Geometry | THREE.BufferGeometry,
+  meshMaterial: THREE.MeshStandardMaterial,
+  meshRef: React.MutableRefObject<typeof Mesh | undefined> | undefined;
+  meshHoveredOver: boolean; //usful for ui -> so people know where they're clicking. (possible to turn this feature off ? )
+  meshActive: boolean;
+  meshVisible: boolean; // for when we want to single out a particular container
+}
 
-interface ContainerViewState {
-    //container state
-    containerState: ContainerState,
-    meshGeometry?: THREE.Geometry | THREE.BufferGeometry,
-    meshMaterial: THREE.MeshStandardMaterial,
-    //view state
-    meshRef: React.MutableRefObject<typeof Mesh | undefined> | undefined;
-    meshHoveredOver: boolean; //usful for ui -> so people know where they're clicking. (possible to turn this feature off ? )
-    meshActive: boolean;
-    meshVisible: boolean; // for when we want to single out a particular container
-    internalLightsOn?: boolean; // for turning on and off internal light sources... 
-    toolTipVisible: boolean;
+interface EnvelopeState {
+  component: string,
+  mesh1: MeshState, 
+  mesh2: MeshState
+}
+interface ViewState {
+  internalLightsOn: boolean;
+  toolTipVisible: boolean;
+}
 
-    // meshGeometry: THREE.Geometry; 
-    // meshMaterial: THREE.Material
 
+interface State {
+    //model state
+    modelState: EnvelopeState,
+
+    viewState: ViewState;
 
 } 
 
 
-  
+// --| Lenses
+const stateLens = Lens.fromProp<State>(); 
+const viewStateLens = Lens.fromProp<ViewState>();
+const envelopeStateLens = Lens.fromProp<EnvelopeState>()
+const meshLens = Lens.fromProp<MeshState>()
 
-type Action =
-  | { _tag: "onClick";        payload: MouseEvent    }
-  | { _tag: "onPointerOver";  payload: PointerEvent  }
-  | { _tag: "onPointerOut";   payload: PointerEvent  }
-  | { _tag: "onContextMenu",  payload: MouseEvent    }
-  | { _tag: "onDoubleClick",  payload: {mouseEvent: MouseEvent, gltf: GLTFResult }    }
+const mesh1Lens = envelopeStateLens('mesh1'); 
+const meshActiveLens = meshLens('meshActive'); 
+// const s = mesh1Lens.composeLens(meshActiveLens).modify((a: boolean) => false)
+
+// --| View and Model state
 
 
-const ContainerReducer = (state: ContainerViewState, action: Action) => {
+
+// --| Action types
+export enum ActionTypes {
+  ON_CLICK = "ON_CLICK",
+  ON_POINTER_OVER = "ON_POINTER_OVER",
+  ON_POINTER_OUT = "ON_POINTER_OUT",
+  ON_CONTEXT_MENU = "ON_CONTEXT_MENU",
+  ON_DOUBLE_CLICK = 'ON_DOUBLE_CLICK'
+}
+
+interface onClickAction {
+ _tag: typeof ActionTypes.ON_CLICK
+ payload: { mouseEvent: MouseEvent }
+}
+interface onPointerOverAction {
+  _tag: typeof ActionTypes.ON_POINTER_OVER
+  payload: { pointerEvent: PointerEvent }
+}
+interface onPointerOutAction {
+  _tag: typeof ActionTypes.ON_POINTER_OUT
+  payload: { pointerEvent: PointerEvent }
+}
+interface onContextMenuAction {
+  _tag: typeof ActionTypes.ON_CONTEXT_MENU
+  payload: { mouseEvent: MouseEvent }
+}
+interface onDoubleClick<T extends GLTFResult= GLTFResult> {
+  _tag: typeof ActionTypes.ON_DOUBLE_CLICK
+  payload: {mouseEvent: MouseEvent, gltf: T }
+}
+
+// Action types
+
+export type Action = 
+| onClickAction
+| onPointerOverAction
+| onPointerOutAction
+| onContextMenuAction
+| onDoubleClick
+
+// Action constructors:
+
+export function onDoubleClick<T extends GLTFResult= GLTFResult>(e: MouseEvent, gltf: T): Action {
+  return {
+    _tag: ActionTypes.ON_DOUBLE_CLICK,
+    payload: {mouseEvent: e, gltf:  gltf}
+  }
+}
+export function onClick(e: MouseEvent): Action {
+  return {
+    _tag: ActionTypes.ON_CLICK,
+    payload: {mouseEvent: e }
+  }
+}
+export function onPointerOver(e: PointerEvent): Action {
+  return {
+    _tag: ActionTypes.ON_POINTER_OVER,
+    payload: {pointerEvent: e }
+  }
+}
+export function onPointerOut(e: PointerEvent): Action {
+  return {
+    _tag: ActionTypes.ON_POINTER_OUT,
+    payload: {pointerEvent: e }
+  }
+}
+export function onContextMenu(e: MouseEvent): Action {
+  return {
+    _tag: ActionTypes.ON_CONTEXT_MENU,
+    payload: {mouseEvent: e }
+  }
+}
+
+
+// Reducer functions on state : 
+const activateMeshOnClick = () => (state: State): State => {
+  return {
+    viewState: state.viewState, 
+    modelState: envelopeStateLens('mesh1')
+                  .composeLens(meshLens('meshActive'))
+                  .modify((a: boolean) => !a)(state.modelState)
+  }
+}
+const activateMeshOnHoverOver = () => (state: State): State => {
+  return {
+    viewState: state.viewState, 
+    modelState: envelopeStateLens('mesh1')
+                .composeLens(meshLens('meshHoveredOver'))
+                .modify((a: boolean) => true)(state.modelState)
+  }
+}
+const deactivateMeshOnHoverOut = () => (state: State): State => {
+  return {
+    viewState: state.viewState, 
+    modelState: envelopeStateLens('mesh1')
+                .composeLens(meshLens('meshHoveredOver'))
+                .modify((a: boolean) => false)(state.modelState)
+  }
+}
+
+const makeToolTipVisible = () => (state: State): State => {
+  return {
+      ...state, viewState: viewStateLens('toolTipVisible').modify((a: boolean) => !a)(state.viewState)
+  }
+}
+
+const updateGeometry = (newGeometry:Geometry | THREE.BufferGeometry  ) => (state: State): State => {
+  return {
+    viewState: state.viewState,
+    modelState: envelopeStateLens('mesh1')
+                .composeLens(meshLens('meshGeometry'))
+                .modify((a: Geometry | THREE.BufferGeometry | undefined) => {return newGeometry})(state.modelState)
+  }
+}
+
+
+
+const ContainerReducer = (state: State, action: Action) => {
   switch (action._tag) {
-    case "onClick":
-      action.payload.stopPropagation()
-      return {...state, meshActive: !state.meshActive};
-    case "onPointerOver":
-      action.payload.stopPropagation()
-      return {...state, meshHoveredOver: true};
-    case "onPointerOut":
-      action.payload.stopPropagation()
-      return {...state, meshHoveredOver: false};
-    case "onContextMenu":
-      action.payload.stopPropagation()
-      return {...state, toolTipVisible: !state.toolTipVisible}
-    case "onDoubleClick":
+    case ActionTypes.ON_CLICK:
       action.payload.mouseEvent.stopPropagation()
-      // we update global state, which should in turn update our local state
-      return {...state, meshGeometry: action.payload.gltf.nodes["A-3_1"].geometry }; // double click should probably isolate the mesh
+      return activateMeshOnClick()(state); 
+    case ActionTypes.ON_POINTER_OVER:
+      action.payload.pointerEvent.stopPropagation()
+      return activateMeshOnHoverOver()(state)
+    case ActionTypes.ON_POINTER_OUT:
+      action.payload.pointerEvent.stopPropagation()
+      return deactivateMeshOnHoverOut()(state);
+    case ActionTypes.ON_DOUBLE_CLICK:
+      action.payload.mouseEvent.stopPropagation()
+      return makeToolTipVisible()(state)      
+      // return {...state, meshGeometry: action.payload.gltf.nodes["A-3_1"].geometry }; // double click should probably isolate the mesh
     default:
       throw new Error();
   }
 }
 
+
+interface ContainerMeshProps extends MeshProps {
+  componentID: SwiftGLTF
+}
 /* Elm architecture: model (i.e state), view (i.e manifestation of the state), update (i.e actions dispatched by events to update state) */
-export const ContainerMesh = (props: MeshProps): JSX.Element => {
+export const ContainerMesh = (props: ContainerMeshProps): JSX.Element => {
 
-  const gltf  = useGLTF('/Swift/A3.glb') as GLTFResult; 
-
-  const initalState: ContainerViewState = {
-    // meshRef: useRef<typeof Mesh>(),
-    meshRef: undefined,
-    meshHoveredOver: false,
-    meshActive: false,
-    meshVisible: true,
-    toolTipVisible: false,
   
-    containerState: containerConstructors.Room(makeContainer('con1')),
-    meshGeometry: undefined,
-    meshMaterial: plywoodMaterial
+
+  // const geometryA1 = (useGLTF('/Swift/A1.glb') as GLTFTypeLookup<SwiftGLTF.A1>).nodes["A-1.001_1"].geometry;
+  // const geometryA2: Geometry | THREE.BufferGeometry = (useGLTF('/Swift/A2.glb') as GLTFTypeLookup<SwiftGLTF.A2>).nodes["A-2_1"].geometry;
+  // const geometryA3: Geometry | THREE.BufferGeometry = (useGLTF('/Swift/A3.glb') as GLTFTypeLookup<SwiftGLTF.A3>).nodes["A-3_1"].geometry;
+  // const geometryA4: Geometry | THREE.BufferGeometry = (useGLTF('/Swift/A4.glb') as GLTFTypeLookup<SwiftGLTF.A4>).nodes["A-4_1"].geometry;
+  // const geometryA5: Geometry | THREE.BufferGeometry = (useGLTF('/Swift/A5.glb') as GLTFTypeLookup<SwiftGLTF.A5>).nodes["A-5_1"].geometry;
+
+  
+  // switch(props.componentID){
+  //   case SwiftGLTF.A1:
+  //     updateGeometry(geometryA1!)
+  //   default: 
+  //     updateGeometry(geometryA1!)
+  //}
+  // console.log(geometryA1); 
+
+  
+
+
+  // R.lookup(props.componentID)(props.gltf)s
+  const initalState: State = {
+
+    modelState: {
+      component: 'hello',
+      mesh1: {
+        meshGeometry: undefined,
+        meshMaterial: plywoodMaterial,
+        meshRef: undefined,
+        meshHoveredOver: false, //usful for ui -> so people know where they're clicking. (possible to turn this feature off ? )
+        meshActive: false,
+        meshVisible: true, // for when we want to single out a particular container
+      },
+      mesh2: {
+        meshGeometry: undefined,
+        meshMaterial: plywoodMaterial,
+        meshRef: undefined,
+        meshHoveredOver: false, //usful for ui -> so people know where they're clicking. (possible to turn this feature off ? )
+        meshActive: false,
+        meshVisible: true, // for when we want to single out a particular container
+      }
+    },
+
+    viewState: {
+      internalLightsOn: false,
+      toolTipVisible: false,
+    }
+
+   
   } 
 
   const globalDispatch = useDispatch()
@@ -160,7 +348,7 @@ export const ContainerMesh = (props: MeshProps): JSX.Element => {
       scale={[10,10,10]}
       receiveShadow={true}
       castShadow={true}
-      visible={state.meshVisible}
+      visible={state.modelState.mesh1.meshVisible}
 
       // -- Object3D node props
       // position?: Vector3;
@@ -179,11 +367,11 @@ export const ContainerMesh = (props: MeshProps): JSX.Element => {
 
 
       /** Update */
-      onClick         = {(e: MouseEvent)    => { return localDispatch({_tag: "onClick",        payload: e})  }}
-      onPointerOver   = {(e: PointerEvent)  => { return localDispatch({_tag: "onPointerOver",  payload: e})  }}
-      onPointerOut    = {(e: PointerEvent)  => { return localDispatch({_tag: "onPointerOut",   payload: e})  }}
-      onContextMenu   = {(e: MouseEvent)    => { return localDispatch({_tag: "onContextMenu",   payload: e}) }}
-      onDoubleClick   = {(e: MouseEvent)    => { return localDispatch({ _tag: "onDoubleClick",  payload: {mouseEvent: e, gltf: gltf } } )}}
+      onClick         = {(e: MouseEvent)    => { return localDispatch( onClick(e)             ) }   }
+      onPointerOver   = {(e: PointerEvent)  => { return localDispatch( onPointerOver(e)       ) }   }
+      onPointerOut    = {(e: PointerEvent)  => { return localDispatch( onPointerOut(e)        ) }   }
+      onContextMenu   = {(e: MouseEvent)    => { return localDispatch( onContextMenu(e)       ) }   }
+      // onDoubleClick   = {(e: MouseEvent)    => { return localDispatch( onDoubleClick(e, props.gltf[0]) ) }   }
       onPointerUp     = {(e: PointerEvent)  => {  }}
       onPointerDown   = {(e: PointerEvent)  => {}}
       onPointerMove   = {(e: PointerEvent)  => {}}
@@ -199,17 +387,17 @@ export const ContainerMesh = (props: MeshProps): JSX.Element => {
 
       {/** View */}
       {/** --- Geometry  */}
-      {(state.meshGeometry !== undefined) ? 
-        <bufferGeometry attach="geometry" {...state.meshGeometry}/> :
+      {(state.modelState.mesh1.meshGeometry !== undefined) ? 
+        <bufferGeometry attach="geometry" {...state.modelState.mesh1.meshGeometry}/> :
         <boxBufferGeometry />
       }
-      // <boxBufferGeometry args={[1, 1, 1]} />
+
       {/** --- Material  */}
-      {(state.meshGeometry !== undefined) ?
+      {(state.modelState.mesh1.meshGeometry !== undefined) ?
         <meshStandardMaterial/> :
         <meshStandardMaterial 
-          {...state.meshMaterial}
-          /*color={state.meshHoveredOver || state.meshActive ? '0x555555' : '0x555555'} */
+          {...state.modelState.mesh1.meshMaterial}
+          color={state.modelState.mesh1.meshHoveredOver || state.modelState.mesh1.meshActive ? '0x555555' : '0x555555'} 
           /> 
       }
 
@@ -217,7 +405,7 @@ export const ContainerMesh = (props: MeshProps): JSX.Element => {
 
 
       {/** --- Tooltip  */}
-      {state.toolTipVisible && 
+      {state.viewState.toolTipVisible && 
         <Html>
             <ContainerTooltip/>
         </Html>
@@ -228,6 +416,4 @@ export const ContainerMesh = (props: MeshProps): JSX.Element => {
 
 
 // React components
-const AnimatedContainerMesh = animated(ContainerMesh)
-
-
+// const AnimatedContainerMesh = animated(ContainerMesh); 

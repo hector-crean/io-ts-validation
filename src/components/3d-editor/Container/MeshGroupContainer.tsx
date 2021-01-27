@@ -14,7 +14,7 @@ import { useDispatch } from 'react-redux';
 
 import {  plywoodMaterial } from '../../../materials/plywoodMaterial'; 
 
-import Model from '../../../Models/Skylark/Atoms/FloorLong'; 
+import SwiftG3 from '../../../Models/Swift/G3'; 
 
 /// Tooltip
 
@@ -144,8 +144,8 @@ export const ContainerGroupMesh = (props: GroupProps): JSX.Element => {
         // ref={state.meshRef}
         receiveShadow={true}
         castShadow={true}
-        visible={state.meshVisible}
-  
+        visible={state.meshVisible}  
+
         // -- Object3D node props
         // position?: Vector3;
         // up?: Vector3;
@@ -163,7 +163,10 @@ export const ContainerGroupMesh = (props: GroupProps): JSX.Element => {
   
   
         /** Update */
-        onClick         = {(e: MouseEvent)    => { return localDispatch({_tag: "onClick",        payload: e})  }}
+        onClick         = {(e: MouseEvent)    => { 
+          console.log(e); 
+          return localDispatch({_tag: "onClick",        payload: e})  }  
+        }
         onPointerOver   = {(e: PointerEvent)  => { return localDispatch({_tag: "onPointerOver",  payload: e})  }}
         onPointerOut    = {(e: PointerEvent)  => { return localDispatch({_tag: "onPointerOut",   payload: e})  }}
         onContextMenu   = {(e: MouseEvent)    => { return localDispatch({_tag: "onContextMenu",   payload: e}) }}
@@ -182,7 +185,9 @@ export const ContainerGroupMesh = (props: GroupProps): JSX.Element => {
         }>    
   
         {/** GLTF model ------------------------------------ */}
-          <Model/>
+          <SwiftG3 
+            meshActive={state.meshActive || state.meshHoveredOver}
+          />
         {/** ------------------------------------------------*/}
   
         </Suspense>

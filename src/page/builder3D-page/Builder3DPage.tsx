@@ -12,6 +12,33 @@ interface Props {}
 function Builder3DPage(props: Props) {
     const {} = props
 
+    React.useEffect(() => {
+        const handleKeyDown = (ev: KeyboardEvent) => {
+          if (ev.key === "i") {
+              console.log('i button pressed')
+            // setEditMode(EditMode.Insert);
+          } else if (ev.key === "m" || ev.key === "Escape") {
+            // setEditMode(EditMode.Move);
+          } else if (ev.key === "r") {
+            // setEditMode(EditMode.Resize);
+          } else if (ev.key === "s") {
+            // setEditMode(EditMode.Slice);
+          } else if (ev.key === "z" && ev.metaKey && !ev.shiftKey) {
+            // setHangars(undoable.undo);
+          } else if (ev.key === "z" && ev.metaKey && ev.shiftKey) {
+            // setHangars(undoable.redo);
+          } else if (ev.key === "c") {
+            // toggleClippingHeight();
+          }
+        };
+        document.addEventListener("keydown", handleKeyDown);
+        return () => {
+          document.removeEventListener("keydown", handleKeyDown);
+        };
+      }, []);
+
+
+
     return (
         <div className='builder-3D-page'>
             <Editor/>

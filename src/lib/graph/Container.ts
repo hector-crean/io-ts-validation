@@ -163,8 +163,18 @@ export type Doorway = { _tag: ContainerStateType.Doorway; data: IContainer }
 export type Void = { _tag: ContainerStateType.Void; data: IContainer }
 
 export type Roof = { _tag: ContainerStateType.Roof; data: IContainer }
-export type EnvelopeSection = { _tag: ContainerStateType.EnvelopeSection; data: IContainer }
 export type Balcony = { _tag: ContainerStateType.Balcony; data: IContainer }
+
+
+
+export type EnvelopeSection = { 
+    _tag: ContainerStateType.EnvelopeSection; data: IContainer 
+}
+
+
+
+
+
 
 
 export type ContainerState = 

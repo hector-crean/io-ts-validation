@@ -10,10 +10,9 @@ import { fold } from 'fp-ts/Monoid'
 
 import * as _ from 'fp-ts/Map'
 
-// const OTuple = getTupleOrd(ordNumber, ordNumber, ordNumber)
+//=====|    Is it preferable to do this with a Record or a Map ? -> Record more useful if to integrate with the db/redux, and 
+//=====|    the functionality is basically identical when using fp-ts ... 
 
-// --- | Global cell states
-const globalCellStates = new Map<Key, SkylarkCellState>(); 
 
 interface Key {
     x: number, 
@@ -29,10 +28,18 @@ const byZ = pipe(ordNumber, contramap((k: Key) => k.z));
 const M = getMonoid<Key>()
 const ordKey = fold(M)([byX, byY, byZ]); 
 
+
+// ---  MAP IMPLEMENTATION : 
+
+// --- | Global cell states
+const globalCellStates_Map = new Map<Key, SkylarkCellState>(); 
+
 // const createKey = (_x: Int, _y: Int, _z: Int) => {return {x: makeInt(_x), y: makeInt(_y), z: makeInt(_z)}}
 
-
-const val = _.lookupWithKey(eqKey)({x: 2, y: 3, z: 5})(globalCellStates)
-
+const val = _.lookupWithKey(eqKey)({x: 2, y: 3, z: 5})(globalCellStates_Map)
 // _.updateAt
 // _.insertAt
+
+// --- | RECORD IMPLEMENTATION
+
+// const globalCellStates_Record: Record<Key, SkylarkCellState> = 

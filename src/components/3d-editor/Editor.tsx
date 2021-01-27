@@ -8,7 +8,9 @@ import * as THREE from 'three';
 import ClippingSlider from './ClippingSlider/ClippingSlider'; 
 import { useSpring } from 'react-spring'; 
 //Models
-import { ContainerMesh } from './Container/MeshContainer'
+import { ContainerMesh  } from './Container/MeshContainer'; 
+// import { ContainerGroupMesh } from './Container/MeshGroupContainer'
+import { ContainerGroup } from './Container/MeshGroupContainer2'
 
 // Icons
 import Icon from '@material-ui/core/Icon';
@@ -22,11 +24,18 @@ import { ReactReduxContext } from 'react-redux';
 import { SceneGraph } from './SceneGraph'
 import { truncateSync } from 'fs';
 
-import { ContainerGroupMesh } from './Container/MeshGroupContainer'; 
 
 import Dodecahedron from './Gestured/Draggable'; 
 
+import { gltfPicked } from './Container/modelMatcher'; 
 
+import {SwiftGLTF } from '../../Models/Swift/GLTF-types'; 
+
+import { v4 as uuidv4 } from 'uuid';
+
+
+
+import SkylarkWhole from './Skylark_gltf_skylark'
 {/* <Icon>
   <FullscreenIcon/>
 </Icon> */}
@@ -102,6 +111,51 @@ const Dolly = (targetObject: THREE.Object3D): void => {
 // }
 
 
+const extractGridPosition = (key: string): number[] =>
+  key.split(",").map(x => Number(x) * 1.2);
+
+
+const Building = () => {
+  const { gl } = useThree();
+  gl.localClippingEnabled = true;
+
+  const grid = {
+    "0,-5": {
+      type: SwiftGLTF.A1,
+    },
+    "0,-4": {
+      type: SwiftGLTF.A2,
+    },
+    "0,-3": {
+      type: SwiftGLTF.A3,
+    },
+    "0,-2": {
+      type: SwiftGLTF.A4,
+    },
+    "0,-1": {
+      type: SwiftGLTF.B1,
+    },
+    "0,0": {
+      type: SwiftGLTF.B2,
+    }
+  };
+
+  return (
+    <>
+      {Object.entries(grid).map(([k, v]) => (
+        
+        <React.Fragment>
+           <ContainerGroup 
+            key={uuidv4()} 
+            position={new THREE.Vector3(extractGridPosition(k)[0], 0, extractGridPosition(k)[1])} 
+            componentID={v.type} 
+          />
+        </React.Fragment>
+       
+      ))}
+    </>
+  );
+};
 
 
 //////////////////////////////////
@@ -153,7 +207,7 @@ const EditorScene = () => {
           <planeBufferGeometry attach="geometry" args={[50, 50, 1, 1]} />
           <shadowMaterial
             attach="material"
-            color={0}
+            color={0.5}
             opacity={0.9}
             side={THREE.DoubleSide}
           />
@@ -163,7 +217,7 @@ const EditorScene = () => {
           
        
        
-          <Dodecahedron/>
+          {/* <Dodecahedron/> */}
 
       <Suspense
         fallback={
@@ -173,9 +227,13 @@ const EditorScene = () => {
         }>
           {/** PUT MODELS HERE  */}
           {/** Create a coordinate system for grid. Place the containers/voxels into grid with given rotations  */}
-          {/* <ContainerMesh position={[0,1,0]}/> */}
+         
           {/* <SceneGraph/> */}
-          {/* <ContainerGroupMesh/> */}
+          <SkylarkWhole/>
+
+
+          {/* <Building/> */}
+          {/* <ContainerMesh componentID={SwiftGLTF.A1}/> */}
 
 
 
