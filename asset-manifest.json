@@ -1,0 +1,20 @@
+{
+  "files": {
+    "main.css": "/hector-crean/io-ts-validation/static/css/main.d8dc1e05.chunk.css",
+    "main.js": "/hector-crean/io-ts-validation/static/js/main.965f83fe.chunk.js",
+    "main.js.map": "/hector-crean/io-ts-validation/static/js/main.965f83fe.chunk.js.map",
+    "runtime-main.js": "/hector-crean/io-ts-validation/static/js/runtime-main.d02adcd6.js",
+    "runtime-main.js.map": "/hector-crean/io-ts-validation/static/js/runtime-main.d02adcd6.js.map",
+    "static/js/2.5eab801e.chunk.js": "/hector-crean/io-ts-validation/static/js/2.5eab801e.chunk.js",
+    "static/js/2.5eab801e.chunk.js.map": "/hector-crean/io-ts-validation/static/js/2.5eab801e.chunk.js.map",
+    "index.html": "/hector-crean/io-ts-validation/index.html",
+    "static/css/main.d8dc1e05.chunk.css.map": "/hector-crean/io-ts-validation/static/css/main.d8dc1e05.chunk.css.map",
+    "static/js/2.5eab801e.chunk.js.LICENSE.txt": "/hector-crean/io-ts-validation/static/js/2.5eab801e.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.d02adcd6.js",
+    "static/js/2.5eab801e.chunk.js",
+    "static/css/main.d8dc1e05.chunk.css",
+    "static/js/main.965f83fe.chunk.js"
+  ]
+}
